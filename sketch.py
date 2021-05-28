@@ -1,5 +1,6 @@
 import math 
 import tkinter
+import numpy
 
 class Sketch():
     """creates scheme"""
@@ -11,6 +12,8 @@ class Sketch():
         self.fc_d = 5  # force point diameter
         self.fc_width = 5  # force width
         
+        self.allowed_diameter = 40
+
 
     def resize(self, r, pos, ipadd, cw, ch):  # recursive function for resizing diameter
         exe = True
@@ -45,16 +48,18 @@ class Sketch():
         return pos_bolt,  pos_force
 
 
-    def draw_bolts(self, pos):
-        d = [20 for i in range(len(pos[0]))]
-        ratio = 1.3
-        for i in range(len(pos[0])):
-            x = self.ipadd + pos[0][i]*(self.cw-2*self.ipadd)
-            y = self.ipadd + pos[1][i]*(self.ch-2*self.ipadd)
-            self.g.create_oval(x-d[i], y-d[i], x+d[i], y+d[i], fill='red')
-            # axes
-            self.g.create_line(x, y-d[i]*ratio, x, y+d[i]*ratio, dash=(4,2))
-            self.g.create_line(x-d[i]*ratio, y, x+d[i]*ratio, y, dash=(4,2))
+    def draw_bolts(self, pos, d):
+        # # print(d, 'these are diameters of bolts')
+        # # print(pos, 'these are the positions of bolts')
+        # ratio = 1.3
+        # for i in range(len(pos[0])):
+        #     x = self.ipadd + pos[0][i]*(self.cw-2*self.ipadd)
+        #     y = self.ipadd + pos[1][i]*(self.ch-2*self.ipadd)
+        #     self.g.create_oval(x-d[i], y-d[i], x+d[i], y+d[i], fill='red')
+        #     # axes
+        #     self.g.create_line(x, y-d[i]*ratio, x, y+d[i]*ratio, dash=(4,2))
+        #     self.g.create_line(x-d[i]*ratio, y, x+d[i]*ratio, y, dash=(4,2))
+        pass
 
 
     def draw_force(self, pos, force):
@@ -68,29 +73,55 @@ class Sketch():
             x2 =  math.cos(math.radians(ang[i]))*size[i]
             y2 =  math.sin(math.radians(ang[i]))*size[i]
             self.g.create_line(x, y, x+x2, y-y2, arrow=tkinter.LAST)
-
+    
+    
     def check_diameter(self):
         pass
 
+    
     def chceck_force(self):
         pass
 
-    def redraw(self, bolt, force):
-        
+   
+    def redraw(self, bolt, force, centroid):
+        # clear the canvas before drawing the new sketchz     
         self.g.delete('all')
-        posb, posf = self.normalize_coordiantes(bolt, force)
+
+        # normalize centroid coordinates along with the bolts
+        print(bolt['x-position'], bolt['y-position'], 'toto sú inputové infošky')
+        # bolt['x-position'].append(centroid[0])
+        # bolt['y-position'].append(centroid[1])
+        bolt_args = bolt.copy()
+        # posb[0], posb[1] = bolt['x-position'].copy(), bolt['y-position'].copy()
+        bolt_args['x-position'].append(centroid[0])
+        bolt_args['y-position'].append(centroid[1])
+
+        # normalize input to interval [0, 1]
+        posb, posf = self.normalize_coordiantes(bolt_args, force)
+        
+        # # get back centroid coordinates
+        # print(posb, 'pred pop')
+        centroid[0] = posb[0].pop()
+        centroid[1] = posb[1].pop()
+        # print(posb, 'po pop')
+        
+        # resize the diamter
+        diameters = numpy.array(bolt['diameter'], dtype=numpy.float64)
+        diameters *= self.allowed_diameter / max(diameters) 
+
+        # resize the force
         
         # make sure nothing overlaps
-        self.check_diameter(posb, bolt)
-        self.chceck_force(posf, force)
+        # self.check_diameter(posb, bolt)
+        # self.chceck_force(posf, force)
 
         # draw scheme
-        self.draw_bolts(posb)
+        self.draw_bolts(posb, diameters)
         self.draw_force(posf, force)
 
         # d = [ float(self.bolt_info['diameter'][i]) for i in range(len(self.bolt_info['diameter']))]  # diameters of bolts
-        # #r = self.resize(r, pos, ipadd, cw, ch)
-        # self.g.create_rectangle(0+self.ipadd, 0+self.ipadd, self.cw-self.ipadd, self.ch-self.ipadd, fill='white')
+        # r = self.resize(r, pos, ipadd, cw, ch)
+        self.g.create_rectangle(0+self.ipadd, 0+self.ipadd, self.cw-self.ipadd, self.ch-self.ipadd, fill='white')
         
     def idk(self):
         print('jes ty kokoos')
