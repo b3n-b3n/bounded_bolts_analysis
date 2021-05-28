@@ -30,8 +30,8 @@ g.grid(row=0, column=1, rowspan=2, sticky='s')
 
 
 sp_bolt = {'diameter': [2, 2, 2, 2],  # sample bolt data
-        'x-position': [1, 2, 1, 2],
-        'y-position': [1, 1, 2, 2],
+        'x-position': [0, 2, 0, 2],
+        'y-position': [0, 0, 2, 2],
         'E': [10, 10, 10, 10],
         'Rm': [10, 10, 10, 10],
         't': [1, 1, 1, 1],
@@ -39,7 +39,7 @@ sp_bolt = {'diameter': [2, 2, 2, 2],  # sample bolt data
 
 sp_force = {'size': [40, 40, 40],  # sample force data
             'x-position': [1, 1.5, 2],
-            'y-position': [1, 1.5, 2],
+            'y-position': [1.5, 1.5, 2],
             'angle': [90, 180, 270]}
 
 

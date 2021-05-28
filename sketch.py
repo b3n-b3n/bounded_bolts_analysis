@@ -1,6 +1,7 @@
-import math 
 import tkinter
 import numpy
+import math
+import copy
 
 class Sketch():
     """creates scheme"""
@@ -9,10 +10,8 @@ class Sketch():
         self.g = g
         self.cw, self.ch = cw, ch
         self.ipadd = 75  # inside canvas padding
-        self.fc_d = 5  # force point diameter
-        self.fc_width = 5  # force width
-        
-        self.allowed_diameter = 40
+        self.fc_d = 3  # force point diameter
+        self.allowed_diameter = 40  # maximum allowed diameter of a bolt
 
 
     def resize(self, r, pos, ipadd, cw, ch):  # recursive function for resizing diameter
@@ -48,18 +47,22 @@ class Sketch():
         return pos_bolt,  pos_force
 
 
+    def draw_centroid(self, centroid):
+        d = 5  # diamter of a centroid
+        x = self.ipadd + centroid[0]*(self.cw-2*self.ipadd)
+        y = self.ipadd + centroid[1]*(self.ch-2*self.ipadd)
+        self.g.create_oval(x-d, y-d, x+d, y+d, fill='blue')
+
+
     def draw_bolts(self, pos, d):
-        # # print(d, 'these are diameters of bolts')
-        # # print(pos, 'these are the positions of bolts')
-        # ratio = 1.3
-        # for i in range(len(pos[0])):
-        #     x = self.ipadd + pos[0][i]*(self.cw-2*self.ipadd)
-        #     y = self.ipadd + pos[1][i]*(self.ch-2*self.ipadd)
-        #     self.g.create_oval(x-d[i], y-d[i], x+d[i], y+d[i], fill='red')
-        #     # axes
-        #     self.g.create_line(x, y-d[i]*ratio, x, y+d[i]*ratio, dash=(4,2))
-        #     self.g.create_line(x-d[i]*ratio, y, x+d[i]*ratio, y, dash=(4,2))
-        pass
+        axis_ratio = 1.3  # how far does the bolt axis extend
+        for i in range(len(pos[0])):
+            x = self.ipadd + pos[0][i]*(self.cw-2*self.ipadd)
+            y = self.ipadd + pos[1][i]*(self.ch-2*self.ipadd)
+            self.g.create_oval(x-d[i], y-d[i], x+d[i], y+d[i])
+            # axes
+            self.g.create_line(x, y-d[i]*axis_ratio, x, y+d[i]*axis_ratio, dash=(4,2))
+            self.g.create_line(x-d[i]*axis_ratio, y, x+d[i]*axis_ratio, y, dash=(4,2))
 
 
     def draw_force(self, pos, force):
@@ -68,7 +71,7 @@ class Sketch():
         for i in range(len(pos[0])):
             x = self.ipadd + pos[0][i]*(self.cw-2*self.ipadd)
             y = self.ipadd + pos[1][i]*(self.ch-2*self.ipadd)
-            self.g.create_oval(x-self.fc_d, y-self.fc_d, x+self.fc_d, y+self.fc_d, fill='hotpink')
+            self.g.create_oval(x-self.fc_d, y-self.fc_d, x+self.fc_d, y+self.fc_d, fill='red')
             
             x2 =  math.cos(math.radians(ang[i]))*size[i]
             y2 =  math.sin(math.radians(ang[i]))*size[i]
@@ -88,11 +91,7 @@ class Sketch():
         self.g.delete('all')
 
         # normalize centroid coordinates along with the bolts
-        print(bolt['x-position'], bolt['y-position'], 'toto sú inputové infošky')
-        # bolt['x-position'].append(centroid[0])
-        # bolt['y-position'].append(centroid[1])
-        bolt_args = bolt.copy()
-        # posb[0], posb[1] = bolt['x-position'].copy(), bolt['y-position'].copy()
+        bolt_args = copy.deepcopy(bolt)
         bolt_args['x-position'].append(centroid[0])
         bolt_args['y-position'].append(centroid[1])
 
@@ -100,10 +99,8 @@ class Sketch():
         posb, posf = self.normalize_coordiantes(bolt_args, force)
         
         # # get back centroid coordinates
-        # print(posb, 'pred pop')
         centroid[0] = posb[0].pop()
         centroid[1] = posb[1].pop()
-        # print(posb, 'po pop')
         
         # resize the diamter
         diameters = numpy.array(bolt['diameter'], dtype=numpy.float64)
@@ -115,13 +112,16 @@ class Sketch():
         # self.check_diameter(posb, bolt)
         # self.chceck_force(posf, force)
 
+        ## margin area
+        # self.g.create_rectangle(0+self.ipadd, 0+self.ipadd, self.cw-self.ipadd, self.ch-self.ipadd, fill='white')
+        
         # draw scheme
         self.draw_bolts(posb, diameters)
         self.draw_force(posf, force)
-
+        self.draw_centroid(centroid)
+        self.g.update()
         # d = [ float(self.bolt_info['diameter'][i]) for i in range(len(self.bolt_info['diameter']))]  # diameters of bolts
         # r = self.resize(r, pos, ipadd, cw, ch)
-        self.g.create_rectangle(0+self.ipadd, 0+self.ipadd, self.cw-self.ipadd, self.ch-self.ipadd, fill='white')
         
     def idk(self):
         print('jes ty kokoos')
