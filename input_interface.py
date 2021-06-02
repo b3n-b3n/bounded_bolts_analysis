@@ -2,7 +2,7 @@ from tkscrolledframe import ScrolledFrame
 import tkinter 
 
 class UI:
-    """ this class create interface where the user can input data"""
+    """ this class creates interface where the user can input data"""
 
     def __init__(self, root, bg, font, bolt, force):
         self.bg = bg
@@ -43,7 +43,7 @@ class UI:
 
         self.object1_ui()
         self.object2_ui()
-        #self.create_buttons()
+
 
     def input_table(self, table_type):
         

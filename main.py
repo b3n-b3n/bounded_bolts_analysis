@@ -14,7 +14,7 @@ dname = r'{}'.format(os.path.realpath(__file__).strip('main.py'))
 os.chdir(dname)  # working directory
 
 root = tkinter.Tk()
-root.title('bounded_bolts')
+root.title('eccentric joints')
 
 # general appearance options
 bg = 'grey99'
@@ -29,13 +29,14 @@ g = tkinter.Canvas(root, width=cw, height=ch, bg='grey80', highlightthickness=0)
 g.grid(row=0, column=1, rowspan=2, sticky='s')
 
 
-sp_bolt = {'diameter': [2, 2, 2, 2],  # sample bolt data
-        'x-position': [0, 2, 0, 2],
-        'y-position': [0, 0, 2, 2],
-        'E': [10, 10, 10, 10],
-        'Rm': [10, 10, 10, 10],
-        't': [1, 1, 1, 1],
-        't2': [2, 2, 2, 2]}
+sp_bolt = {'name': [None],
+        'diameter': [None],  # sample bolt data
+        'x-position': [None],
+        'y-position': [None],
+        'E': [None],
+        'Rm': [None],
+        't': [None],
+        't2': [None]}
 
 sp_force = {'size': [40, 40, 40],  # sample force data
             'x-position': [1, 1.5, 2],
@@ -48,10 +49,13 @@ def calculate_centroid(bolts):
         y = sum(bolts['y-position']) / len(bolts['y-position'])
         return [x,y]
 
+def centroid_and_sketch(bolt, force):
+        centroid = calculate_centroid(inpt.bolt_info)
+        sktch.redraw(inpt.bolt_info, inpt.force_info, centroid)
 
 def create_buttons(sktch, inpt):
         button_id = ['draw', 'calculate', 'genrate report', 'multiple reports']
-        functions = [lambda: sktch.redraw(inpt.bolt_info, inpt.force_info, calculate_centroid(inpt.bolt_info)), 
+        functions = [lambda: centroid_and_sketch(inpt.bolt_info, inpt.force_info), 
                     lambda: print(inpt.bolt_info),
                     sktch.idk, 
                     sktch.idk]
