@@ -37,36 +37,36 @@ err_lab = tkinter.Label(root, text='tuto je balel',
 err_lab.grid(row=0, column=1, pady=(10, 0))
 
 # sample bolt
-sp_bolt = {'name': [None],
-           'diameter[mm]': [None],
-           'x-position': [None],
-           'y-position': [None],
-           'E[MPa]': [None],
-           'Rm[MPa]': [None],
-           't[mm]': [None],
-           't2[mm]': [None]}
+sp_bolt = {'name': [''],
+           'diameter[mm]': [''],
+           'x-position': [''],
+           'y-position': [''],
+           'E[MPa]': [''],
+           'Rm[MPa]': [''],
+           't[mm]': [''],
+           't2[mm]': ['']}
 
 # sample force
-sp_force = {'name': [None],
-            'size[N]': [None],
-            'x-position': [None],
-            'y-position': [None],
-            'angle[deg]': [None]}
+sp_force = {'name': [''],
+            'size[N]': [''],
+            'x-position': [''],
+            'y-position': [''],
+            'angle[deg]': ['']}
 
 
 def calculate_centroid(bolts):
-        l = len(bolts['x-position'])
+    l = len(bolts['x-position'])
     x = sum(bolts['x-position'][1:l]) / len(bolts['x-position'])
     y = sum(bolts['y-position'][1:l]) / len(bolts['y-position'])
     return [x, y]
 
 
 def centroid_and_scheme(bolt, force):
-    try:
-        centroid = calculate_centroid(inpt.bolt_info)
-        sktch.redraw(inpt.bolt_info, inpt.force_info, centroid)
-    except:
-        err_lab.config(text='there are no geometry data')
+    # try:
+    centroid = calculate_centroid(inpt.bolt_info)
+    sktch.redraw(inpt.bolt_info, inpt.force_info, centroid)
+    # except:
+    #     err_lab.config(text='there are no geometry and/or force data')
 
 
 def create_buttons(sktch, inpt):

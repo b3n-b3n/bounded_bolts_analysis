@@ -67,8 +67,8 @@ class Scheme():
 
 
     def draw_force(self, pos, force):
-        ang = force['angle']
-        size = force['size']
+        ang = force['angle[deg]']
+        size = force['size[N]']
         for i in range(len(pos[0])):
             x = self.ipadd + pos[0][i]*(self.cw-2*self.ipadd)
             y = self.ipadd + pos[1][i]*(self.ch-2*self.ipadd)
@@ -104,7 +104,7 @@ class Scheme():
         centroid[1] = posb[1].pop()
         
         # resize the diamter
-        diameters = numpy.array(bolt['diameter'], dtype=numpy.float64)
+        diameters = numpy.array(bolt['diameter[mm]'], dtype=numpy.float64)
         diameters *= self.allowed_diameter / max(diameters) 
 
         # resize the force

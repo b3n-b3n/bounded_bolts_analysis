@@ -127,25 +127,31 @@ class UI:
                 info[entrys[column]] = []
                 for row in range(num_rows):
                     value = entrys_id[row][column].get()
+
+                    # save name as string others as float
+                    if column != 0: info[entrys[column]].append(float(value))
+                    else: info[entrys[column]].append(value)
+                    
+                    # check if all entries are filled
                     if not value:
                         err_lab.grid(row=3, column=0, sticky='n'+'s'+'e'+'w')
                         err_lab.config(text='all entrys must be filled')
                         return
-                    if column == ypos:  # checking if two positions of bolt are the same
-                        value2 = entrys_id[row][xpos].get()
-                        lx = [i for i, v in enumerate(
-                            info[entrys[xpos]]) if v == value2]
-                        ly = [i for i, v in enumerate(
-                            info[entrys[ypos]]) if v == value]
-                        rng = min(len(lx), len(ly))
-                        for i in range(rng):
-                            if lx[i] == ly[i]:
-                                err_lab.grid(row=3, column=0,
-                                             sticky='n'+'s'+'e'+'w')
-                                err_lab.config(
-                                    text='two positions of bolt are the same')
-                                return
-                    info[entrys[column]].append(value)
+                    # checking if two positions of bolt are the same
+                    # if column == ypos:
+                    #     value2 = entrys_id[row][xpos].get()
+                    #     lx = [i for i, v in enumerate(
+                    #         info[entrys[xpos]]) if v == value2]
+                    #     ly = [i for i, v in enumerate(
+                    #         info[entrys[ypos]]) if v == value]
+                    #     rng = min(len(lx), len(ly))
+                    #     for i in range(rng):
+                    #         if lx[i] == ly[i]:
+                    #             err_lab.grid(row=3, column=0,
+                    #                          sticky='n'+'s'+'e'+'w')
+                    #             err_lab.config(
+                    #                 text='two positions of bolt are the same')
+                    #             return
             if table_type == 'bolt':
                 self.bolt_info = info.copy()
             else:
@@ -195,9 +201,9 @@ class UI:
                         relief="groove", justify="center")
                     entrys_id[row][column].grid(
                         row=row+1, column=column, padx=0, pady=0)
-                    ## inserting default values
-                    # entrys_id[row][column].insert(
-                    #     0, info[entrys[column]][row])
+                    # inserting default values
+                    entrys_id[row][column].insert(
+                        0, info[entrys[column]][row])
         
         # display image of axis orientation
         if table_type == 'force':
