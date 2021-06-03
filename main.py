@@ -1,4 +1,5 @@
 # general libraries
+from tkinter.constants import NONE
 import tkinter.filedialog
 import pyautogui
 import tkinter
@@ -11,7 +12,9 @@ import scheme
 
 # get a path to this file
 dname = r'{}'.format(os.path.realpath(__file__).strip('main.py'))
-os.chdir(dname)  # working directory
+# change the working directory if it is somewhere else
+os.chdir(dname)
+
 
 root = tkinter.Tk()
 root.title('eccentric joints')
@@ -28,20 +31,22 @@ font = [('ms sans', '13'), ('ms sans', '11'), ('ms sans', '9')]
 g = tkinter.Canvas(root, width=cw, height=ch, bg='grey80', highlightthickness=0)  # 1000x600
 g.grid(row=0, column=1, rowspan=2, sticky='s')
 
-
+# sample bolt
 sp_bolt = {'name': [None],
-        'diameter': [None],  # sample bolt data
+        'diameter[mm]': [None],
         'x-position': [None],
         'y-position': [None],
-        'E': [None],
-        'Rm': [None],
-        't': [None],
-        't2': [None]}
+        'E[MPa]': [None],
+        'Rm[MPa]': [None],
+        't[mm]': [None],
+        't2[mm]': [None]}
 
-sp_force = {'size': [40, 40, 40],  # sample force data
-            'x-position': [1, 1.5, 2],
-            'y-position': [1.5, 1.5, 2],
-            'angle': [90, 180, 270]}
+# sample force
+sp_force = {'name': [None],
+        'size': [None],  
+        'x-position': [None],
+        'y-position': [None],
+        'angle': [None]}
 
 
 def calculate_centroid(bolts):
@@ -65,7 +70,7 @@ def create_buttons(sktch, inpt):
                         font=font[1], bg=bg, relief=relief).grid(row=index//2, 
                         column=index % 2, sticky='e'+'w', padx=2, pady=2)
                         
-inpt = input_interface.UI(root, bg, font, sp_bolt, sp_force)
+inpt = input_interface.UI(root, bg, font, sp_bolt, sp_force, dname)
 sktch = scheme.Scheme(g, inpt, cw, ch)
 create_buttons(sktch, inpt)
 

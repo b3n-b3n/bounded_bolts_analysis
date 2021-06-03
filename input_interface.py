@@ -1,15 +1,17 @@
 from tkscrolledframe import ScrolledFrame
-import tkinter 
+import tkinter
+import os
 
 class UI:
     """ this class creates interface where the user can input data"""
 
-    def __init__(self, root, bg, font, bolt, force):
+    def __init__(self, root, bg, font, bolt, force, dname):
         self.bg = bg
         self.font = font
+        self.path = dname
         self.relief = 'groove'
         self.bolt_info = bolt
-        self.force_info= force
+        self.force_info = force
 
         # --LABELFRAMES------------------------------------------------------------------
         self.inputs = tkinter.LabelFrame(
@@ -33,45 +35,59 @@ class UI:
         self.buttons.grid(row=1, column=0, sticky='n'+'e'+'w')
 
         tkinter.Button(self.table, text='load geometry data', command=lambda: self.input_table('bolt'),
-            font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
+                       font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
 
-        tkinter.Button(self.table, text='load stress data', command=lambda: self.input_table('force'), 
-            font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
+        tkinter.Button(self.table, text='load stress data', command=lambda: self.input_table('force'),
+                       font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
 
-        tkinter.Label(self.table, text='momet sily', bg=self.bg).pack(side='left')
+        tkinter.Label(self.table, text='momet sily',
+                      bg=self.bg).pack(side='left')
         tkinter.Entry(self.table, width=20).pack(side='right')
 
         self.object1_ui()
         self.object2_ui()
 
+    def choose_width(self, idx, width):
+        """returns desired width for an entry box
+        the ones containing name should be wider"""
+
+        if idx == 0: return width[1]
+        else: return width[0]
+
+
     # --INPUT TABLES------------------------------------------------
     def input_table(self, table_type):
+        """function responsible for generating the input table
+        for both force and bolt data
         
+        it includes all the secondary functions for table like add
+        submit or remove"""
+
         nroot = tkinter.Tk()
         nroot.title('input table')
         entrys_id = []
-        entry_width = 10
-        
+        entry_width = [12, 15]
+
         if table_type == 'bolt':
-            width, height= 750, 250
+            width, height = 860, 250
             info = self.bolt_info
         else:
-            width, height= 400, 250
+            width, height = 500, 250
             info = self.force_info
 
         entrys = list(info.keys())
         samplekey = list(info.keys())[0]
         entrys_id = [['' for _ in range(len(entrys))]
-                    for _ in range(len(info[samplekey]))]
+                     for _ in range(len(info[samplekey]))]
 
         err_lab = tkinter.Label(nroot, text='', fg='red')
-        err_lab.grid(row=3, column=0, sticky='n'+'s'+'e'+'w')
-        err_lab.grid_remove()    
+        err_lab.grid(row=4, column=0, columnspan=3, sticky='n'+'s'+'e'+'w')
+        err_lab.grid_remove()
         num_rows = 1 if not info[samplekey] else len(info[samplekey])
 
         # Create a ScrolledFrame widget and buttons
         scrll_frm = ScrolledFrame(nroot, width=width, height=height)
-        scrll_frm.grid(row=0, column=0, rowspan=3)
+        scrll_frm.grid(row=0, column=0, columnspan=3)
 
         # Bind the arrow keys and scroll wheel
         scrll_frm.bind_arrow_keys(nroot)
@@ -80,7 +96,6 @@ class UI:
         # Create a frame within the ScrolledFrame
         inner_frame = scrll_frm.display_widget(tkinter.Frame)
 
-        
         def add_row():
             nonlocal num_rows
 
@@ -89,28 +104,11 @@ class UI:
 
             for column in range(len(entrys)):
                 entrys_id[num_rows][column] = tkinter.Entry(
-                    inner_frame, width=entry_width, borderwidth=2, relief="groove", justify="center")
+                    inner_frame, width=self.choose_width(column, entry_width), borderwidth=2, relief="groove", justify="center")
                 entrys_id[num_rows][column].grid(
                     row=num_rows+1, column=column, padx=0, pady=0)
             num_rows += 1
 
-
-        for row in range(num_rows):  # generate initial table
-            for column in range(len(entrys)):
-                if row == 0:
-                    tkinter.Label(inner_frame, text=entrys[column], relief="flat", justify="center").grid(
-                        row=row, column=column, padx=0, pady=0)
-                
-                if not info[samplekey]:
-                    add_row()
-
-                if info[samplekey] and row < num_rows:
-                    entrys_id[row][column] = tkinter.Entry(
-                        inner_frame, width=entry_width, borderwidth=2, relief="groove", justify="center")
-                    entrys_id[row][column].grid(
-                        row=row+1, column=column, padx=0, pady=0)
-                    # entrys_id[row][column].insert(
-                    #     0, info[entrys[column]][row])
 
         def remove_row():
             nonlocal num_rows
@@ -181,15 +179,43 @@ class UI:
                         if i != 0 and 2 < idx+1:
                             if entrys_id[i][idx+1].get() == '':
                                 entrys_id[i][idx+1].delete(0, 'end')
-                                entrys_id[i][idx+1].insert(0, info[entrys[idx+1]][i-1])
+                                entrys_id[i][idx +
+                                             1].insert(0, info[entrys[idx+1]][i-1])
                     break
 
+        # generate initial table
+        for row in range(num_rows):
+            for column in range(len(entrys)):
+                if row == 0:
+                    tkinter.Label(inner_frame, text=entrys[column], relief="flat", justify="center").grid(
+                        row=row, column=column, padx=0, pady=0)
+
+                if not info[samplekey]:
+                    add_row()
+
+                if info[samplekey] and row < num_rows:
+                    entrys_id[row][column] = tkinter.Entry(
+                        inner_frame, width=self.choose_width(column, entry_width), borderwidth=2, 
+                        relief="groove", justify="center")
+                    entrys_id[row][column].grid(
+                        row=row+1, column=column, padx=0, pady=0)
+                    ## inserting default values
+                    # entrys_id[row][column].insert(
+                    #     0, info[entrys[column]][row])
+        
+        # display image of axis orientation
+        if table_type == 'force':
+            img = tkinter.PhotoImage(master=nroot, file=os.path.join(self.path, r'images/angle_orientation.png'))
+            img = img.subsample(4, 4)
+            img_lab = tkinter.Label(nroot, image=img)
+            img_lab.grid(row=0, column=3, rowspan=3)
+
         tkinter.Button(nroot, text='add row', command=lambda: add_row()).grid(
-            row=0, column=1, sticky='n'+'s'+'e'+'w')
+            row=1, column=0, sticky='n'+'s'+'e'+'w')
         tkinter.Button(nroot, text='delete row', command=lambda: remove_row()).grid(
             row=1, column=1, sticky='n'+'s'+'e'+'w')
         tkinter.Button(nroot, text='submit data', command=submit_data).grid(
-            row=2, column=1, sticky='n'+'s'+'e'+'w')
+            row=1, column=2, sticky='n'+'s'+'e'+'w')
         nroot.bind('<Tab>', select_entry)
         nroot.mainloop()
 
