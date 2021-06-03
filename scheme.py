@@ -6,12 +6,13 @@ import copy
 class Scheme():
     """creates scheme"""
 
-    def __init__(self, g, input, cw, ch):
+    def __init__(self, g, input, cw, ch, err_lab):
         self.g = g
         self.cw, self.ch = cw, ch
         self.ipadd = 75  # inside canvas padding
         self.fc_d = 3  # force point diameter
         self.allowed_diameter = 40  # maximum allowed diameter of a bolt
+        self.err_lab = err_lab
 
 
     def resize(self, r, pos, ipadd, cw, ch):  # recursive function for resizing diameter

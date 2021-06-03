@@ -16,33 +16,29 @@ class UI:
         # --LABELFRAMES------------------------------------------------------------------
         self.inputs = tkinter.LabelFrame(
             root, text='inputs', relief='solid', bg=self.bg)
-        self.inputs.grid(row=0, column=0, sticky='n'+'e'+'w', ipady=5)
+        self.inputs.grid(row=0, column=0, rowspan=2, sticky='n'+'e'+'w', ipady=5, ipadx=5, padx=5)
 
         self.table = tkinter.LabelFrame(
             self.inputs, text='input_tables', relief='groove', bg=self.bg)
-        self.table.grid(row=0, column=0, sticky='e'+'w', ipady=5)
+        self.table.grid(row=0, column=0, sticky='e'+'w')
 
         self.object1 = tkinter.LabelFrame(
-            self.inputs, text='zaves', relief='groove', bg=self.bg)
+            self.inputs, text='connection material 0', relief='groove', bg=self.bg)
         self.object1.grid(row=1, column=0, sticky='n'+'e'+'w'+'s')
 
         self.object2 = tkinter.LabelFrame(
-            self.inputs, text='naves', relief='groove', bg=self.bg)
+            self.inputs, text='connection material 1', relief='groove', bg=self.bg)
         self.object2.grid(row=2, column=0, sticky='n'+'e'+'w'+'s')
 
         self.buttons = tkinter.LabelFrame(
             text='buttons', relief='solid', bg=self.bg)
-        self.buttons.grid(row=1, column=0, sticky='n'+'e'+'w')
+        self.buttons.grid(row=2, column=0, sticky='n'+'e'+'w', padx=5)
 
         tkinter.Button(self.table, text='load geometry data', command=lambda: self.input_table('bolt'),
                        font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
 
         tkinter.Button(self.table, text='load stress data', command=lambda: self.input_table('force'),
                        font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
-
-        tkinter.Label(self.table, text='momet sily',
-                      bg=self.bg).pack(side='left')
-        tkinter.Entry(self.table, width=20).pack(side='right')
 
         self.object1_ui()
         self.object2_ui()
@@ -72,7 +68,7 @@ class UI:
             width, height = 860, 250
             info = self.bolt_info
         else:
-            width, height = 500, 250
+            width, height = 600, 250
             info = self.force_info
 
         entrys = list(info.keys())
@@ -81,7 +77,7 @@ class UI:
                      for _ in range(len(info[samplekey]))]
 
         err_lab = tkinter.Label(nroot, text='', fg='red')
-        err_lab.grid(row=4, column=0, columnspan=3, sticky='n'+'s'+'e'+'w')
+        err_lab.grid(row=5, column=0, columnspan=3, sticky='n'+'s'+'e'+'w')
         err_lab.grid_remove()
         num_rows = 1 if not info[samplekey] else len(info[samplekey])
 
@@ -114,7 +110,7 @@ class UI:
             nonlocal num_rows
 
             err_lab.grid_forget()
-            if num_rows > 0:
+            if num_rows > 1:
                 for column in range(len(entrys)):
                     entrys_id[num_rows-1][column].grid_remove()
                 entrys_id.pop()
@@ -149,7 +145,7 @@ class UI:
                                 err_lab.config(
                                     text='two positions of bolt are the same')
                                 return
-                    info[entrys[column]].append(float(value))
+                    info[entrys[column]].append(value)
             if table_type == 'bolt':
                 self.bolt_info = info.copy()
             else:
@@ -210,18 +206,21 @@ class UI:
             img_lab = tkinter.Label(nroot, image=img)
             img_lab.grid(row=0, column=3, rowspan=3)
 
+            tkinter.Label(nroot, text='momet sily[N/mm]').grid(row=1, column=0, columnspan=2)
+            tkinter.Entry(nroot, width=20, justify='center').grid(row=1, column=2, sticky='E'+'W')
+
         tkinter.Button(nroot, text='add row', command=lambda: add_row()).grid(
-            row=1, column=0, sticky='n'+'s'+'e'+'w')
+            row=2, column=0, sticky='n'+'s'+'e'+'w')
         tkinter.Button(nroot, text='delete row', command=lambda: remove_row()).grid(
-            row=1, column=1, sticky='n'+'s'+'e'+'w')
+            row=2, column=1, sticky='n'+'s'+'e'+'w')
         tkinter.Button(nroot, text='submit data', command=submit_data).grid(
-            row=1, column=2, sticky='n'+'s'+'e'+'w')
+            row=2, column=2, sticky='n'+'s'+'e'+'w')
         nroot.bind('<Tab>', select_entry)
         nroot.mainloop()
 
     # MATERIAL INFORMATION -------------------------------------------
     def object1_ui(self):
-        entry_id = ['t', 'E', 'Rm']
+        entry_id = ['t', 'name']
         object1_entry = {}
 
         for index, id in enumerate(entry_id):
@@ -232,7 +231,7 @@ class UI:
             object1_entry[id].grid(row=index, column=1, sticky='e')
 
     def object2_ui(self):
-        entry_id = ['t', 'E', 'Rm']
+        entry_id = ['t', 'name']
         object2_entry = {}
 
         for index, id in enumerate(entry_id):
