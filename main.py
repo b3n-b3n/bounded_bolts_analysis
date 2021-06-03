@@ -7,7 +7,7 @@ import os
 
 # including local files
 import input_interface
-import sketch
+import scheme
 
 # get a path to this file
 dname = r'{}'.format(os.path.realpath(__file__).strip('main.py'))
@@ -49,13 +49,13 @@ def calculate_centroid(bolts):
         y = sum(bolts['y-position']) / len(bolts['y-position'])
         return [x,y]
 
-def centroid_and_sketch(bolt, force):
+def centroid_and_scheme(bolt, force):
         centroid = calculate_centroid(inpt.bolt_info)
         sktch.redraw(inpt.bolt_info, inpt.force_info, centroid)
 
 def create_buttons(sktch, inpt):
         button_id = ['draw', 'calculate', 'genrate report', 'multiple reports']
-        functions = [lambda: centroid_and_sketch(inpt.bolt_info, inpt.force_info), 
+        functions = [lambda: centroid_and_scheme(inpt.bolt_info, inpt.force_info), 
                     lambda: print(inpt.bolt_info),
                     sktch.idk, 
                     sktch.idk]
@@ -66,10 +66,8 @@ def create_buttons(sktch, inpt):
                         column=index % 2, sticky='e'+'w', padx=2, pady=2)
                         
 inpt = input_interface.UI(root, bg, font, sp_bolt, sp_force)
-sktch = sketch.Sketch(g, inpt, cw, ch)
+sktch = scheme.Scheme(g, inpt, cw, ch)
 create_buttons(sktch, inpt)
-calculate_centroid(inpt.bolt_info)
-
 
 
 g.update()

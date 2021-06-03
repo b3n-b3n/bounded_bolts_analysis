@@ -32,10 +32,10 @@ class UI:
             text='buttons', relief='solid', bg=self.bg)
         self.buttons.grid(row=1, column=0, sticky='n'+'e'+'w')
 
-        tkinter.Button(self.table, text='edit bolt data', command=lambda: self.input_table('bolt'),
+        tkinter.Button(self.table, text='load geometry data', command=lambda: self.input_table('bolt'),
             font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
 
-        tkinter.Button(self.table, text='edit force data', command=lambda: self.input_table('force'), 
+        tkinter.Button(self.table, text='load stress data', command=lambda: self.input_table('force'), 
             font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
 
         tkinter.Label(self.table, text='momet sily', bg=self.bg).pack(side='left')
@@ -44,7 +44,7 @@ class UI:
         self.object1_ui()
         self.object2_ui()
 
-
+    # --INPUT TABLES------------------------------------------------
     def input_table(self, table_type):
         
         nroot = tkinter.Tk()
@@ -53,7 +53,7 @@ class UI:
         entry_width = 10
         
         if table_type == 'bolt':
-            width, height= 675, 250
+            width, height= 750, 250
             info = self.bolt_info
         else:
             width, height= 400, 250
@@ -109,8 +109,8 @@ class UI:
                         inner_frame, width=entry_width, borderwidth=2, relief="groove", justify="center")
                     entrys_id[row][column].grid(
                         row=row+1, column=column, padx=0, pady=0)
-                    entrys_id[row][column].insert(
-                        0, info[entrys[column]][row])
+                    # entrys_id[row][column].insert(
+                    #     0, info[entrys[column]][row])
 
         def remove_row():
             nonlocal num_rows
@@ -193,6 +193,7 @@ class UI:
         nroot.bind('<Tab>', select_entry)
         nroot.mainloop()
 
+    # MATERIAL INFORMATION -------------------------------------------
     def object1_ui(self):
         entry_id = ['t', 'E', 'Rm']
         object1_entry = {}

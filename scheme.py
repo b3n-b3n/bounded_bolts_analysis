@@ -3,7 +3,7 @@ import numpy
 import math
 import copy
 
-class Sketch():
+class Scheme():
     """creates scheme"""
 
     def __init__(self, g, input, cw, ch):
@@ -87,7 +87,7 @@ class Sketch():
 
    
     def redraw(self, bolt, force, centroid):
-        # clear the canvas before drawing the new sketchz     
+        # clear the canvas before drawing the new scheme     
         self.g.delete('all')
 
         # normalize centroid coordinates along with the bolts
