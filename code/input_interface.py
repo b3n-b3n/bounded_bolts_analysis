@@ -249,5 +249,20 @@ class UI:
             object2_entry[id].grid(row=index, column=1, sticky='e')
 
     # UPDATING DATA ---------------------------------------------------
-    def update_data(self, data, type):
-        test_data = tkinter.filedialog.askopenfile(mode='r')
+    def update_data(self, inpt_type):
+        test_data = tkinter.filedialog.askopenfile(mode='r+')
+        if inpt_type == 'bolt': data = self.bolt_info
+        else: data = self.force_info
+
+        # remove old data from the dictionary
+        for x in list(data.keys()): data[x].clear()
+
+        while True:
+            line = test_data.readline()
+            if line == '': break
+
+            line = line.strip().split('\t')
+            line = [float(d.replace(',', '.')) if i!= 0 else d for i, d in enumerate(line)]
+
+            # append the files to the dictionary
+            for idx, column in enumerate(list(data.keys())): data[column].append(line[idx])

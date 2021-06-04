@@ -76,7 +76,7 @@ def create_buttons(sktch, inpt):
     functions = [lambda: centroid_and_scheme(inpt.bolt_info, inpt.force_info),
                  lambda: print(inpt.bolt_info),
                  sktch.idk, sktch.idk,
-                 sktch.idk, sktch.idk,]
+                 lambda: inpt.update_data('bolt'), lambda: inpt.update_data('force')]
 
     for index, id in enumerate(button_id):
         tkinter.Button(inpt.buttons, text=id, command=functions[index], width=15,
