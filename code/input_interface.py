@@ -250,12 +250,4 @@ class UI:
 
     # UPDATING DATA ---------------------------------------------------
     def update_data(self, data, type):
-        # test_data = tkinter.filedialog.askopenfile(mode='r')
-
-        # while True:
-        # line = test_data.readline()
-        # if line == '': break
-
-        # line = line.split('\t')
-        # line = [d.strip().replace(',', '.') for d in line]
-        pass
+        test_data = tkinter.filedialog.askopenfile(mode='r')

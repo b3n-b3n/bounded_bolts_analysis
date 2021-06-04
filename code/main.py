@@ -70,11 +70,13 @@ def centroid_and_scheme(bolt, force):
 
 
 def create_buttons(sktch, inpt):
-    button_id = ['draw', 'calculate', 'genrate report', 'multiple reports']
+    button_id = ['draw', 'calculate', 
+                'genrate report', 'multiple reports',
+                'load geometry', 'load stress']
     functions = [lambda: centroid_and_scheme(inpt.bolt_info, inpt.force_info),
                  lambda: print(inpt.bolt_info),
-                 sktch.idk,
-                 sktch.idk]
+                 sktch.idk, sktch.idk,
+                 sktch.idk, sktch.idk,]
 
     for index, id in enumerate(button_id):
         tkinter.Button(inpt.buttons, text=id, command=functions[index], width=15,
@@ -83,7 +85,7 @@ def create_buttons(sktch, inpt):
 
 
 inpt = input_interface.UI(root, bg, font, sp_bolt, sp_force, dname)
-sktch = scheme.Scheme(g, inpt, cw, ch, err_lab)
+sktch = scheme.Scheme(g, inpt, cw, ch, err_lab, font)
 create_buttons(sktch, inpt)
 
 

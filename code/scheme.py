@@ -6,14 +6,17 @@ import copy
 class Scheme():
     """creates scheme"""
 
-    def __init__(self, g, input, cw, ch, err_lab):
+    def __init__(self, g, input, cw, ch, err_lab, font):
         self.g = g
         self.cw, self.ch = cw, ch
-        self.ipadd = 75  # inside canvas padding
-        self.fc_d = 3  # force point diameter
-        self.allowed_diameter = 40  # maximum allowed diameter of a bolt
+        self.font = font
         self.err_lab = err_lab
 
+        self.ipadd = 80  # inside canvas padding
+        self.fc_d = 3  # force point diameter
+        self.allowed_diameter = 40  # maximum allowed diameter of a bolt
+        self.axis_size = 50  # indicating axis
+        self.axis_dist = 40  # disance from the edge
 
     def resize(self, r, pos, ipadd, cw, ch):  # recursive function for resizing diameter
         exe = True
@@ -46,6 +49,15 @@ class Scheme():
                 pos_bolt[i] = [(pos_bolt[i][j]-mi) / (ma - mi) for j in range(len(pos_bolt[i]))]   
                 pos_force[i] = [(pos_force[i][j]-mi) / (ma - mi) for j in range(len(pos_force[i]))]   
         return pos_bolt,  pos_force
+
+
+    def indicate_axis(self):
+        base = self.axis_dist
+        self.g.create_line(base, base, base + self.axis_size, base, arrow=tkinter.LAST)
+        self.g.create_text(base+self.axis_size-10, base-10, text='X', font=self.font[1])
+
+        self.g.create_line(base, base, base, base + self.axis_size, arrow=tkinter.LAST)
+        self.g.create_text(base-10, base+self.axis_size-10, text='Y', font=self.font[1])
 
 
     def draw_centroid(self, centroid):
@@ -113,10 +125,11 @@ class Scheme():
         # self.check_diameter(posb, bolt)
         # self.chceck_force(posf, force)
 
-        ## margin area
-        # self.g.create_rectangle(0+self.ipadd, 0+self.ipadd, self.cw-self.ipadd, self.ch-self.ipadd, fill='white')
+        # margin area
+        self.g.create_rectangle(0+self.ipadd, 0+self.ipadd, self.cw-self.ipadd, self.ch-self.ipadd, fill='white')
         
         # draw scheme
+        self.indicate_axis()
         self.draw_bolts(posb, diameters)
         self.draw_force(posf, force)
         self.draw_centroid(centroid)
