@@ -17,7 +17,8 @@ class Scheme():
         self.allowed_diameter = 40  # maximum allowed diameter of a bolt
         self.axis_size = 50  # indicating axis
         self.axis_dist = 20  # disance from the edge
-        self.label_dist = 5
+        self.labdist_bolt = 2  # distance of label form the bolt
+        self.labdist_force = 10 # distance of label form the force point
 
     def resize(self, r, pos, ipadd, cw, ch):  # recursive function for resizing diameter
         exe = True
@@ -66,12 +67,11 @@ class Scheme():
         x = self.ipadd + centroid[0]*(self.cw-2*self.ipadd)
         y = self.ipadd + centroid[1]*(self.ch-2*self.ipadd)
         self.g.create_oval(x-d, y-d, x+d, y+d, fill='blue')
+        # label
+        self.g.create_text(x+d+self.labdist_force, y-d-self.labdist_force, text='C.G.', font=self.font[1])
 
 
-    def draw_bolts(self, pos, d):
-        print(pos)
-        print(type(pos))
-        print(pos['name'])
+    def draw_bolts(self, pos, d, bolt):
         axis_ratio = 1.3  # how far does the bolt axis extend
         for i in range(len(pos[0])):
             x = self.ipadd + pos[0][i]*(self.cw-2*self.ipadd)
@@ -81,7 +81,7 @@ class Scheme():
             self.g.create_line(x, y-d[i]*axis_ratio, x, y+d[i]*axis_ratio, dash=(4,2))
             self.g.create_line(x-d[i]*axis_ratio, y, x+d[i]*axis_ratio, y, dash=(4,2))
             # label
-            self.g.create_text(x+d[i]+self.label_dist, y+d[i]+self.label_dist, text=pos['name'][i], font=self.font[2])
+            self.g.create_text(x+d[i]+self.labdist_bolt, y-d[i]-self.labdist_bolt, text=bolt['name'][i], font=self.font[2])
 
 
     def draw_force(self, pos, force):
@@ -90,11 +90,15 @@ class Scheme():
         for i in range(len(pos[0])):
             x = self.ipadd + pos[0][i]*(self.cw-2*self.ipadd)
             y = self.ipadd + pos[1][i]*(self.ch-2*self.ipadd)
+            # point
             self.g.create_oval(x-self.fc_d, y-self.fc_d, x+self.fc_d, y+self.fc_d, fill='red')
-            
+            # size
             x2 =  math.cos(math.radians(ang[i]))*size[i]
             y2 =  math.sin(math.radians(ang[i]))*size[i]
             self.g.create_line(x, y, x+x2, y-y2, arrow=tkinter.LAST)
+            # label
+            self.g.create_text(x+self.labdist_force+self.fc_d, y-self.fc_d-self.labdist_force, text=force['name'][i], font=self.font[2])
+
     
     
     def check_diameter(self):
@@ -136,7 +140,7 @@ class Scheme():
         
         # draw scheme
         self.indicate_axis()
-        self.draw_bolts(posb, diameters)
+        self.draw_bolts(posb, diameters, bolt)
         self.draw_force(posf, force)
         self.draw_centroid(centroid)
         self.g.update()
