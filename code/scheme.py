@@ -16,7 +16,8 @@ class Scheme():
         self.fc_d = 3  # force point diameter
         self.allowed_diameter = 40  # maximum allowed diameter of a bolt
         self.axis_size = 50  # indicating axis
-        self.axis_dist = 40  # disance from the edge
+        self.axis_dist = 20  # disance from the edge
+        self.label_dist = 5
 
     def resize(self, r, pos, ipadd, cw, ch):  # recursive function for resizing diameter
         exe = True
@@ -68,6 +69,9 @@ class Scheme():
 
 
     def draw_bolts(self, pos, d):
+        print(pos)
+        print(type(pos))
+        print(pos['name'])
         axis_ratio = 1.3  # how far does the bolt axis extend
         for i in range(len(pos[0])):
             x = self.ipadd + pos[0][i]*(self.cw-2*self.ipadd)
@@ -76,6 +80,8 @@ class Scheme():
             # axes
             self.g.create_line(x, y-d[i]*axis_ratio, x, y+d[i]*axis_ratio, dash=(4,2))
             self.g.create_line(x-d[i]*axis_ratio, y, x+d[i]*axis_ratio, y, dash=(4,2))
+            # label
+            self.g.create_text(x+d[i]+self.label_dist, y+d[i]+self.label_dist, text=pos['name'][i], font=self.font[2])
 
 
     def draw_force(self, pos, force):

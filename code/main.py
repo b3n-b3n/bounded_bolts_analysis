@@ -11,7 +11,7 @@ import input_interface
 import scheme
 
 # get a path to this file
-dname = r'{}'.format(os.path.realpath(__file__).strip('main.py'))
+dname = r'{}'.format(os.path.realpath(__file__).replace('code/main.py', ''))
 # change the working directory if it is somewhere else
 os.chdir(dname)
 

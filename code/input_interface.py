@@ -248,6 +248,7 @@ class UI:
                 self.object2, justify='center', font=self.font[1], relief=self.relief, width=20)
             object2_entry[id].grid(row=index, column=1, sticky='e')
 
+
     # UPDATING DATA ---------------------------------------------------
     def update_data(self, inpt_type):
         test_data = tkinter.filedialog.askopenfile(mode='r+')

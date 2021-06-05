@@ -12,6 +12,8 @@
     remove stuff {cm:2021-06-03}
         remove E, Rm {cm:2021-06-03}
         put moment of force here {cm:2021-06-03}
+    loading variables
+    error message for loading incorrect variables
 (B) SCHEME  {c}
     resizsing
         resize bolts
