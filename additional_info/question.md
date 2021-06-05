@@ -1,10 +1,12 @@
 - ### výpočet
   - máme viac druhov prípadov či je len jeden?
   - treba nejako uvažovať aj výber materiálu v GUI?
+
 - ### náčrt
   - chcek byť veľkosť vektora proporčná?
   - majú mať šróby na náčrte označenie? (aby sa vedel v reporte, ktorý je najviac zaťažený)
   - ako sa chce robiť report budú tam aj vstupné údaje pre šróby 
+  - v náčrte používam diameter ako radius bude to vadiť?
 
 
 ### spôsov výpočtu

@@ -32,7 +32,7 @@ g = tkinter.Canvas(root, width=cw, height=ch, bg='grey80',
                    highlightthickness=0)  # 1000x600
 g.grid(row=1, column=1, rowspan=2, sticky='s')
 
-err_lab = tkinter.Label(root, text='tuto je balel',
+err_lab = tkinter.Label(root, text='',
                         font=font[1], fg='red', bg=bg)
 err_lab.grid(row=0, column=1, pady=(10, 0))
 
@@ -55,10 +55,18 @@ sp_force = {'name': [''],
 
 
 def calculate_centroid(bolts):
-    l = len(bolts['x-position'])
-    x = sum(bolts['x-position'][1:l]) / len(bolts['x-position'])
-    y = sum(bolts['y-position'][1:l]) / len(bolts['y-position'])
-    return [x, y]
+    out, xy = [], ['x-position', 'y-position']
+    # calculate coordinate for x and y separately 
+    for i in range(2):
+        numerator, denominator = 0, 0
+        for j in range(len(bolts['x-position'])):
+            # expression taken form images/notes/vypocez_taziska
+            Gj = bolts['E[MPa]'][j]
+            Aj = (bolts['diameter[mm]'][j]**2 * math.pi) / 4
+            numerator += bolts[xy[i]][j] * Gj * Aj
+            denominator += Gj * Aj
+        out.append(numerator/denominator)
+    return out
 
 
 def centroid_and_scheme(bolt, force):

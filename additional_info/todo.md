@@ -12,19 +12,19 @@
     remove stuff {cm:2021-06-03}
         remove E, Rm {cm:2021-06-03}
         put moment of force here {cm:2021-06-03}
-    loading variables
+    loading variables {cm:2021-06-05}
     error message for loading incorrect variables
 (B) SCHEME  {c}
     resizsing
         resize bolts
         resize force
-        make a larger padding frame
+        make a larger padding frame {cm:2021-06-05}
         check for overlaping
-    axis
-        mark axis inside of the scheme
-    naming the elemets
-        add name to each bolt in scheme
-        name the centroid
-        add name to each force in the scheme
+    axis {cm:2021-06-05}
+        mark axis inside of the scheme {cm:2021-06-05}
+    naming the elemets {cm:2021-06-05}
+        add name to each bolt in scheme {cm:2021-06-05}
+        name the centroid {cm:2021-06-05}
+        add name to each force in the scheme {cm:2021-06-05}
 (C) GENERATING A REPORT
 (D) DOCUMENTATION
