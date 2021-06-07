@@ -7,8 +7,9 @@ class Vectors:
 
 
 class Calculate:
-    def __init__(self, centroid):
+    def __init__(self, err_lab):
         self.G_denom = 2.6  # denominator in calculation of G
+        self.err_lab = err_lab
     
     
     def draw_resulting_vectors(self):
@@ -20,4 +21,5 @@ class Calculate:
     def shear_load_moment(self):
         pass
 
-    
+    def calc_driver(self):
+        self.err_lab.config(text='')

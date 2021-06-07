@@ -6,12 +6,13 @@ import os
 class UI:
     """ this class creates interface where the user can input data"""
 
-    def __init__(self, root, bg, font, bolt, force, dname):
+    def __init__(self, root, bg, font, bolt, force, dname, err_lab):
         self.bg = bg
         self.font = font
         self.path = dname
-        self.relief = 'groove'
         self.bolt_info = bolt
+        self.relief = 'groove'
+        self.err_lab = err_lab
         self.force_info = force
 
         # --LABELFRAMES------------------------------------------------------------------
@@ -254,16 +255,27 @@ class UI:
         test_data = tkinter.filedialog.askopenfile(mode='r+')
         if inpt_type == 'bolt': data = self.bolt_info
         else: data = self.force_info
-
+        
         # remove old data from the dictionary
         for x in list(data.keys()): data[x].clear()
 
-        while True:
-            line = test_data.readline()
-            if line == '': break
+        try:
+            while True:
+                line = test_data.readline()
+                if line == '': break
 
-            line = line.strip().split('\t')
-            line = [float(d.replace(',', '.')) if i!= 0 else d for i, d in enumerate(line)]
+                line = line.strip().split('\t')
+                line = [float(d.replace(',', '.')) if i!= 0 else d for i, d in enumerate(line)]
 
-            # append the files to the dictionary
-            for idx, column in enumerate(list(data.keys())): data[column].append(line[idx])
+                if len(line) != len(list(data.keys())):
+                    # in case there are more arrtibutes in the input we need
+                    self.err_lab.config(text='invalid input data look at documentation')
+                    break
+
+                # append the files to the dictionary
+                for idx, column in enumerate(list(data.keys())): data[column].append(line[idx])
+        except:
+            # in case there are less arrtibutes in the input we need to handle
+            # an error
+            self.err_lab.config(text='invalid input data look at documentation')
+        

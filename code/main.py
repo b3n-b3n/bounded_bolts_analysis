@@ -9,6 +9,7 @@ import os
 # including local files
 import input_interface
 import scheme
+import calc
 
 # get a path to this file
 dname = r'{}'.format(os.path.realpath(__file__).replace('code/main.py', ''))
@@ -69,22 +70,32 @@ def calculate_centroid(bolts):
     return out
 
 
-def centroid_and_scheme(bolt, force):
-    # try:
-    centroid = calculate_centroid(inpt.bolt_info)
-    sktch.redraw(inpt.bolt_info, inpt.force_info, centroid)
-    # except:
-    #     err_lab.config(text='there are no geometry and/or force data')
+def redraw_scheme():
+    # a tkinter button cannot have more than one fuctions bounded to it 
+    try:
+        centroid = calculate_centroid(inpt.bolt_info)
+        sktch.redraw(inpt.bolt_info, inpt.force_info, centroid)
+    except:
+        err_lab.config(text='there are none or invalid geometry and/or force data')
+
+
+def run_calculations():
+    # a tkinter button cannot have more than one fuctions bounded to it 
+    try:
+        centroid = calculate_centroid(inpt.bolt_info)
+        sktch.redraw(inpt.bolt_info, inpt.force_info, centroid)
+    except:
+        err_lab.config(text='there are none or invalid geometry and/or force data')
 
 
 def create_buttons(sktch, inpt):
     button_id = ['draw', 'calculate', 
                 'genrate report', 'multiple reports',
                 'load geometry', 'load stress']
-    functions = [lambda: centroid_and_scheme(inpt.bolt_info, inpt.force_info),
-                 lambda: print(inpt.bolt_info),
-                 sktch.idk, sktch.idk,
-                 lambda: inpt.update_data('bolt'), lambda: inpt.update_data('force')]
+    functions = [redraw_scheme, 
+                run_calculations,
+                sktch.idk, sktch.idk,
+                lambda: inpt.update_data('bolt'), lambda: inpt.update_data('force')]
 
     for index, id in enumerate(button_id):
         tkinter.Button(inpt.buttons, text=id, command=functions[index], width=15,
@@ -92,8 +103,9 @@ def create_buttons(sktch, inpt):
                                                                 column=index % 2, sticky='e'+'w', padx=2, pady=2)
 
 
-inpt = input_interface.UI(root, bg, font, sp_bolt, sp_force, dname)
+inpt = input_interface.UI(root, bg, font, sp_bolt, sp_force, dname, err_lab)
 sktch = scheme.Scheme(g, inpt, cw, ch, err_lab, font)
+calc = calc.Calculate(err_lab)
 create_buttons(sktch, inpt)
 
 
