@@ -76,6 +76,7 @@ def redraw_scheme():
         centroid = calculate_centroid(inpt.bolt_info)
         sktch.redraw(inpt.bolt_info, inpt.force_info, centroid)
     except:
+        # if the user inputs wrong data manually
         err_lab.config(text='there are none or invalid geometry and/or force data')
 
 
@@ -83,8 +84,9 @@ def run_calculations():
     # a tkinter button cannot have more than one fuctions bounded to it 
     try:
         centroid = calculate_centroid(inpt.bolt_info)
-        sktch.redraw(inpt.bolt_info, inpt.force_info, centroid)
+        sktch.redraw(centroid)
     except:
+        # if the user inputs wrong data manually
         err_lab.config(text='there are none or invalid geometry and/or force data')
 
 
@@ -92,8 +94,7 @@ def create_buttons(sktch, inpt):
     button_id = ['draw', 'calculate', 
                 'genrate report', 'multiple reports',
                 'load geometry', 'load stress']
-    functions = [redraw_scheme, 
-                run_calculations,
+    functions = [redraw_scheme, run_calculations,
                 sktch.idk, sktch.idk,
                 lambda: inpt.update_data('bolt'), lambda: inpt.update_data('force')]
 
@@ -105,7 +106,7 @@ def create_buttons(sktch, inpt):
 
 inpt = input_interface.UI(root, bg, font, sp_bolt, sp_force, dname, err_lab)
 sktch = scheme.Scheme(g, inpt, cw, ch, err_lab, font)
-calc = calc.Calculate(err_lab)
+calc = calc.Calculate(err_lab, inpt)
 create_buttons(sktch, inpt)
 
 

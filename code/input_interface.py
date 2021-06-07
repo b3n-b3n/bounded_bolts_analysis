@@ -253,6 +253,7 @@ class UI:
     # UPDATING DATA ---------------------------------------------------
     def update_data(self, inpt_type):
         test_data = tkinter.filedialog.askopenfile(mode='r+')
+        self.err_lab.config(text='')
         if inpt_type == 'bolt': data = self.bolt_info
         else: data = self.force_info
         
@@ -272,7 +273,7 @@ class UI:
                     self.err_lab.config(text='invalid input data look at documentation')
                     break
 
-                # append the files to the dictionary
+                # append the files to the dictionary which will be further used
                 for idx, column in enumerate(list(data.keys())): data[column].append(line[idx])
         except:
             # in case there are less arrtibutes in the input we need to handle
