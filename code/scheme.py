@@ -3,6 +3,36 @@ import numpy
 import math
 import copy
 
+
+class Geometry:
+    def __init__(self):
+        pass
+
+    def normalize_coordiantes(self, bolt, force):
+        xy = ['x-position', 'y-position']   # name of keys from dict
+        pos_bolt = ['', '']  # first is x coordinate then y
+        pos_force = ['', '']
+
+        for i in range(2):  # normalizing input of position
+            pos_bolt[i], pos_force[i] = bolt[xy[i]], force[xy[i]]
+            pos_bolt[i] = [float(pos_bolt[i][j]) for j in range(len(pos_bolt[i]))]
+            pos_force[i] = [float(pos_force[i][j]) for j in range(len(pos_force[i]))]
+            
+            merged = pos_bolt[i] + pos_force[i]
+            mi, ma = min(merged), max(merged)
+            if mi == ma:
+                pos_bolt[i] = [0.5 for _ in pos_bolt[i]]
+                pos_force[i] = [0.5 for _ in pos_force[i]]
+            else:
+                # tu si skoncil g
+                pos_bolt[i] = [(pos_bolt[i][j]-mi) / (ma - mi) for j in range(len(pos_bolt[i]))]   
+                pos_force[i] = [(pos_force[i][j]-mi) / (ma - mi) for j in range(len(pos_force[i]))]   
+        return pos_bolt,  pos_force
+    
+    def normalize_vector_size(self, vect):
+        pass
+
+
 class Scheme():
     """creates scheme"""
 
@@ -29,29 +59,6 @@ class Scheme():
                 if md/2 > ipadd/2:
                     d = [d[i] * (ipadd/md) for i in range(len(d))]
         return d
-
-
-    def normalize_coordiantes(self, bolt, force):
-        xy = ['x-position', 'y-position']   # name of keys from dict
-        pos_bolt = ['', '']  # first is x coordinate then y
-        pos_force = ['', '']
-
-        for i in range(2):  # normalizing input of position
-            pos_bolt[i], pos_force[i] = bolt[xy[i]], force[xy[i]]
-            pos_bolt[i] = [float(pos_bolt[i][j]) for j in range(len(pos_bolt[i]))]
-            pos_force[i] = [float(pos_force[i][j]) for j in range(len(pos_force[i]))]
-            
-            merged = pos_bolt[i] + pos_force[i]
-            mi, ma = min(merged), max(merged)
-            if mi == ma:
-                pos_bolt[i] = [0.5 for _ in pos_bolt[i]]
-                pos_force[i] = [0.5 for _ in pos_force[i]]
-            else:
-                # tu si skoncil g
-                pos_bolt[i] = [(pos_bolt[i][j]-mi) / (ma - mi) for j in range(len(pos_bolt[i]))]   
-                pos_force[i] = [(pos_force[i][j]-mi) / (ma - mi) for j in range(len(pos_force[i]))]   
-        return pos_bolt,  pos_force
-
 
     def indicate_axis(self):
         base = self.axis_dist
@@ -109,7 +116,7 @@ class Scheme():
         pass
 
    
-    def redraw(self, bolt, force, centroid):
+    def redraw(self, bolt, force, centroid, vect):
         # clear the canvas before drawing the new scheme     
         self.g.delete('all')
 
@@ -119,7 +126,7 @@ class Scheme():
         bolt_args['y-position'].append(centroid[1])
 
         # normalize input to interval [0, 1]
-        posb, posf = self.normalize_coordiantes(bolt_args, force)
+        posb, posf = Geometry.normalize_coordiantes(None, bolt_args, force)
         
         # # get back centroid coordinates
         centroid[0] = posb[0].pop()
@@ -129,8 +136,9 @@ class Scheme():
         diameters = numpy.array(bolt['diameter[mm]'], dtype=numpy.float64)
         diameters *= self.allowed_diameter / max(diameters) 
 
-        # resize the force
+
         
+        # resize the force
         # make sure nothing overlaps
         # self.check_diameter(posb, bolt)
         # self.chceck_force(posf, force)
