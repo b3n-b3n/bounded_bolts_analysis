@@ -72,22 +72,24 @@ def calculate_centroid(bolts):
 
 def redraw_scheme():
     # a tkinter button cannot have more than one fuctions bounded to it 
-    try:
-        centroid = calculate_centroid(inpt.bolt_info)
-        sktch.redraw(inpt.bolt_info, inpt.force_info, centroid)
-    except:
-        # if the user inputs wrong data manually
-        err_lab.config(text='there are none or invalid geometry and/or force data')
+    # try:
+    centroid = calculate_centroid(inpt.bolt_info)
+    sktch.redraw(inpt.bolt_info, inpt.force_info, centroid, None)
+    # except:
+    #     # if the user inputs wrong data manually
+    #     err_lab.config(text='there are none or invalid geometry and/or force data')
 
 
 def run_calculations():
     # a tkinter button cannot have more than one fuctions bounded to it 
-    try:
-        centroid = calculate_centroid(inpt.bolt_info)
-        sktch.redraw(centroid)
-    except:
-        # if the user inputs wrong data manually
-        err_lab.config(text='there are none or invalid geometry and/or force data')
+    # try:
+    centroid = calculate_centroid(inpt.bolt_info)
+    vect = calc.calc_driver(centroid)
+    print(vect)
+    sktch.redraw(inpt.bolt_info, inpt.force_info, centroid, vect)
+    # except:
+    #     # if the user inputs wrong data manually
+    #     err_lab.config(text='there are none or invalid geometry and/or force data')
 
 
 def create_buttons(sktch, inpt):
