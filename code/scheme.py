@@ -30,7 +30,13 @@ class Geometry:
         return pos_bolt,  pos_force
     
     def normalize_vector_size(self, vect):
+        max_size = Scheme.ipadd # based of padding in the canvas
+
+    def convert_to_vector(self, size, angle):
         pass
+
+    def max_vector(self, vectors):
+        print(vectors)
 
 
 class Scheme():
@@ -116,7 +122,7 @@ class Scheme():
         pass
 
    
-    def redraw(self, bolt, force, centroid, vect):
+    def redraw(self, bolt, force, centroid, res_vect):
         # clear the canvas before drawing the new scheme     
         self.g.delete('all')
 
@@ -136,8 +142,13 @@ class Scheme():
         diameters = numpy.array(bolt['diameter[mm]'], dtype=numpy.float64)
         diameters *= self.allowed_diameter / max(diameters) 
 
-
+        # if res_vect: Geometry.normalize_vector_size(res_vect)
         
+        load_vect = Geometry.convert_to_vector(None, force['size[N]'], force['angle[deg]'])
+        max_vect = Geometry.max_vector(None, load_vect, res_vect)
+        
+        # load_vector = Geometry.normalize_vector_size(load_vect, max_vect)
+
         # resize the force
         # make sure nothing overlaps
         # self.check_diameter(posb, bolt)
