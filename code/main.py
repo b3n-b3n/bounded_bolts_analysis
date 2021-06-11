@@ -40,8 +40,8 @@ err_lab.grid(row=0, column=1, pady=(10, 0))
 # sample bolt
 sp_bolt = {'name': [''],
            'diameter[mm]': [''],
-           'x-position': [''],
-           'y-position': [''],
+           'x-pos[mm]': [''],
+           'y-pos[mm]': [''],
            'E[MPa]': [''],
            'Rm[MPa]': [''],
            't1[mm]': [''],
@@ -50,17 +50,17 @@ sp_bolt = {'name': [''],
 # sample force
 sp_force = {'name': [''],
             'size[N]': [''],
-            'x-position': [''],
-            'y-position': [''],
+            'x-pos[mm]': [''],
+            'y-pos[mm]': [''],
             'angle[deg]': ['']}
 
 
 def calculate_centroid(bolts):
-    out, xy = [], ['x-position', 'y-position']
+    out, xy = [], ['x-pos[mm]', 'y-pos[mm]']
     # calculate coordinate for x and y separately 
     for i in range(2):
         numerator, denominator = 0, 0
-        for j in range(len(bolts['x-position'])):
+        for j in range(len(bolts['x-pos[mm]'])):
             # expression taken form images/notes/vypocez_taziska
             Gj = bolts['E[MPa]'][j]/2.6
             Aj = (bolts['diameter[mm]'][j]**2 * math.pi) / 4

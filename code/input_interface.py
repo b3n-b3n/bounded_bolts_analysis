@@ -25,11 +25,11 @@ class UI:
         self.table.grid(row=0, column=0, sticky='e'+'w')
 
         self.object1 = tkinter.LabelFrame(
-            self.inputs, text='connection material 0', relief='groove', bg=self.bg)
+            self.inputs, text='connection material 1', relief='groove', bg=self.bg)
         self.object1.grid(row=1, column=0, sticky='n'+'e'+'w'+'s')
 
         self.object2 = tkinter.LabelFrame(
-            self.inputs, text='connection material 1', relief='groove', bg=self.bg)
+            self.inputs, text='connection material 2', relief='groove', bg=self.bg)
         self.object2.grid(row=2, column=0, sticky='n'+'e'+'w'+'s')
 
         self.buttons = tkinter.LabelFrame(
@@ -39,7 +39,7 @@ class UI:
         tkinter.Button(self.table, text='edit geometry data', command=lambda: self.input_table('bolt'),
                        font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
 
-        tkinter.Button(self.table, text='edit stress data', command=lambda: self.input_table('force'),
+        tkinter.Button(self.table, text='edit load data', command=lambda: self.input_table('force'),
                        font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
 
         self.object1_ui()
@@ -122,8 +122,8 @@ class UI:
             nonlocal num_rows
 
             err_lab.grid_remove()
-            ypos = entrys.index('y-position')
-            xpos = entrys.index('x-position')
+            ypos = entrys.index('y-pos[mm]')
+            xpos = entrys.index('x-pos[mm]')
 
             for column in range(len(entrys)):
                 info[entrys[column]] = []
@@ -213,9 +213,15 @@ class UI:
             img = img.subsample(4, 4)
             img_lab = tkinter.Label(nroot, image=img)
             img_lab.grid(row=0, column=3, rowspan=3)
-
-            tkinter.Label(nroot, text='momet sily[N/mm]').grid(row=1, column=0, columnspan=2)
+            
+            tkinter.Label(nroot, text='force moment[N*mm]').grid(row=1, column=0, columnspan=2)
             tkinter.Entry(nroot, width=20, justify='center').grid(row=1, column=2, sticky='E'+'W')
+        else:
+            img = tkinter.PhotoImage(master=nroot, file=os.path.join(self.path, r'images/axis_orientation.png'))
+            img = img.subsample(4, 4)
+            img_lab = tkinter.Label(nroot, image=img)
+            img_lab.grid(row=0, column=3, rowspan=1)
+
 
         tkinter.Button(nroot, text='add row', command=lambda: add_row()).grid(
             row=2, column=0, sticky='n'+'s'+'e'+'w')
@@ -228,7 +234,7 @@ class UI:
 
     # MATERIAL INFORMATION -------------------------------------------
     def object1_ui(self):
-        entry_id = ['t', 'name']
+        entry_id = ['thickness', 'name']
         object1_entry = {}
 
         for index, id in enumerate(entry_id):
@@ -239,7 +245,7 @@ class UI:
             object1_entry[id].grid(row=index, column=1, sticky='e')
 
     def object2_ui(self):
-        entry_id = ['t', 'name']
+        entry_id = ['thickness', 'name']
         object2_entry = {}
 
         for index, id in enumerate(entry_id):
