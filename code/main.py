@@ -44,7 +44,7 @@ sp_bolt = {'name': [''],
            'y-position': [''],
            'E[MPa]': [''],
            'Rm[MPa]': [''],
-           't[mm]': [''],
+           't1[mm]': [''],
            't2[mm]': ['']}
 
 # sample force
@@ -62,7 +62,7 @@ def calculate_centroid(bolts):
         numerator, denominator = 0, 0
         for j in range(len(bolts['x-position'])):
             # expression taken form images/notes/vypocez_taziska
-            Gj = bolts['E[MPa]'][j]
+            Gj = bolts['E[MPa]'][j]/2.6
             Aj = (bolts['diameter[mm]'][j]**2 * math.pi) / 4
             numerator += bolts[xy[i]][j] * Gj * Aj
             denominator += Gj * Aj
@@ -94,8 +94,8 @@ def run_calculations():
 
 def create_buttons(sktch, inpt):
     button_id = ['draw', 'calculate', 
-                'genrate report', 'multiple reports',
-                'load geometry', 'load stress']
+                'generate report', 'multiple reports',
+                'fill in geometry', 'fill in load']
     functions = [redraw_scheme, run_calculations,
                 sktch.idk, sktch.idk,
                 lambda: inpt.update_data('bolt'), lambda: inpt.update_data('force')]
