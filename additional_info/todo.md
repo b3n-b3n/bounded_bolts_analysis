@@ -2,7 +2,7 @@
     centroid calculation {cm:2021-06-06}
         change to the method form notes {cm:2021-06-06}
     create calculate class {cm:2021-06-07}
-    transform force to vectors
+    transform force to vectors {cm:2021-06-11}
     
 (B) INPUT INTERFACE 
     name elements in scheme {c} {cm:2021-06-03}

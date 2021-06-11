@@ -14,6 +14,7 @@ class UI:
         self.relief = 'groove'
         self.err_lab = err_lab
         self.force_info = force
+        self.moment_of_force = None
 
         # --LABELFRAMES------------------------------------------------------------------
         self.inputs = tkinter.LabelFrame(
@@ -215,7 +216,8 @@ class UI:
             img_lab.grid(row=0, column=3, rowspan=3)
             
             tkinter.Label(nroot, text='force moment[N*mm]').grid(row=1, column=0, columnspan=2)
-            tkinter.Entry(nroot, width=20, justify='center').grid(row=1, column=2, sticky='E'+'W')
+            self.moment_of_force = tkinter.Entry(nroot, width=20, justify='center')
+            self.moment_of_force.grid(row=1, column=2, sticky='E'+'W')
         else:
             img = tkinter.PhotoImage(master=nroot, file=os.path.join(self.path, r'images/axis_orientation.png'))
             img = img.subsample(4, 4)
