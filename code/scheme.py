@@ -127,12 +127,11 @@ class Scheme():
             self.g.create_text(x+self.labdist_force+self.fc_d, y-self.fc_d-self.labdist_force, text=force['name'][i], font=self.font[2])
 
     def draw_result_force(self, pos, size):
-        print(size)
         for i in range(len(pos[0])):
             x = self.ipadd + pos[0][i]*(self.cw-2*self.ipadd)
             y = self.ch - self.ipadd - pos[1][i]*(self.ch-2*self.ipadd)
-            x2 = size[0][i]
-            y2 =  size[1][i]
+            x2 = size[i][0]
+            y2 =  size[i][1]
             self.g.create_line(x, y, x+x2, y-y2, arrow=tkinter.LAST, fill='green')
     
     def check_diameter(self):

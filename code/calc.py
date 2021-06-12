@@ -22,7 +22,10 @@ class Auxilliary:
         return math.sqrt(dx**2 + dy**2)
 
     def zip_vectors(self, v1, v2):
-        return [v1[0]+v2[0], v1[1]+v2[1]]
+        for i in range(len(v1)):
+            v1[i][0] += v2[i][0]
+            v1[i][1] += v2[i][1]
+        return v1
 
     def force_moment(self, c, force, vect):
         finMoment = 0
@@ -35,6 +38,11 @@ class Auxilliary:
             finMoment += numpy.cross(ri, fi)
         return finMoment
 
+    def invert_vector(self, vect):
+        for i in range(len(vect)):
+            vect[i][0] *= -1 
+            vect[i][1] *= -1
+        return vect
 
 class Calculate:
     def __init__(self, err_lab, inpt):
@@ -44,11 +52,6 @@ class Calculate:
         # data provided by user
         self.bolt = inpt.bolt_info
         self.force = inpt.force_info
-        
-        # resulting vectors
-        self.res_vect = {}
-        self.res_vect['load_vector'] = []
-        self.res_vect['load-moment_vector'] = []
 
         self.aux = Auxilliary()
 
@@ -56,6 +59,7 @@ class Calculate:
     def shear_load(self, vect):
         # calulate sum of all fastener ares
         sA = 0
+        out = []
         for i in range(len(self.bolt['name'])):
             Ai = self.bolt['diameter[mm]'][i]**2*math.pi / 4
             Gi = self.bolt['E[MPa]'][i]/2.6
@@ -70,15 +74,13 @@ class Calculate:
                 Ai = self.bolt['diameter[mm]'][i]**2*math.pi / 4
                 finVec[0] += vect[j][0]*(Ai*Gi / sA)
                 finVec[1] += vect[j][1]*(Ai*Gi / sA)
-            
-            # convert result to reaction force
-            finVec[0] *= -1
-            finVec[1] *= -1
-            self.res_vect['load_vector'].append(finVec)
+            out.append(finVec)
+        return out
 
 
     def shear_load_moment(self, c, vect, moment_of_force):
-        sA = 0 
+        sA = 0
+        out = []
         for i in range(len(self.bolt['name'])):
             Ai = self.bolt['diameter[mm]'][i]**2*math.pi / 4
             Gi = self.bolt['E[MPa]'][i]/2.6
@@ -100,11 +102,8 @@ class Calculate:
                 finVec[0] += M*(Ai*Gi*d / sA)
                 finVec[1] += M*(Ai*Gi*d / sA)
                 # this here needs to be done
-            
-            # convert result to reaction force
-            finVec[0] *= -1
-            finVec[1] *= -1
-            self.res_vect['load_vector'].append(finVec)
+            out.append(finVec)
+        return out
            
 
     def sum_resulting_vectors(self):
@@ -114,11 +113,8 @@ class Calculate:
         self.err_lab.config(text='')
         vect = self.aux.convert_to_vector(self.force)
 
-        self.shear_load(vect)
-        self.shear_load_moment(centroid, vect, force_moment)
+        shear_load = self.aux.invert_vector(self.shear_load(vect))
+        shear_load_moment = self.aux.invert_vector(self.shear_load_moment(centroid, vect, force_moment))
 
         # return self.aux.zip_vectors(self.res_vect['load_vector'],  self.res_vect['load-moment_vector'])
-        return self.res_vect['load-moment_vector']
-        # tato funkcia vrati vysledny vektor do main s čoho sa to
-        # potom prekreslí v sketchi
-
+        return shear_load
