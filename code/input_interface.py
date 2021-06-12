@@ -14,7 +14,9 @@ class UI:
         self.relief = 'groove'
         self.err_lab = err_lab
         self.force_info = force
-        self.moment_of_force = None
+        
+        self.force_moment = ''
+        self.force_moment_entry = None
 
         # --LABELFRAMES------------------------------------------------------------------
         self.inputs = tkinter.LabelFrame(
@@ -140,21 +142,9 @@ class UI:
                         err_lab.grid(row=3, column=0, sticky='n'+'s'+'e'+'w')
                         err_lab.config(text='all entrys must be filled')
                         return
-                    # checking if two positions of bolt are the same
-                    # if column == ypos:
-                    #     value2 = entrys_id[row][xpos].get()
-                    #     lx = [i for i, v in enumerate(
-                    #         info[entrys[xpos]]) if v == value2]
-                    #     ly = [i for i, v in enumerate(
-                    #         info[entrys[ypos]]) if v == value]
-                    #     rng = min(len(lx), len(ly))
-                    #     for i in range(rng):
-                    #         if lx[i] == ly[i]:
-                    #             err_lab.grid(row=3, column=0,
-                    #                          sticky='n'+'s'+'e'+'w')
-                    #             err_lab.config(
-                    #                 text='two positions of bolt are the same')
-                    #             return
+            
+            self.force_moment = float(self.force_moment_entry.get()) 
+
             if table_type == 'bolt':
                 self.bolt_info = info.copy()
             else:
@@ -216,8 +206,9 @@ class UI:
             img_lab.grid(row=0, column=3, rowspan=3)
             
             tkinter.Label(nroot, text='force moment[N*mm]').grid(row=1, column=0, columnspan=2)
-            self.moment_of_force = tkinter.Entry(nroot, width=20, justify='center')
-            self.moment_of_force.grid(row=1, column=2, sticky='E'+'W')
+            self.force_moment_entry = tkinter.Entry(nroot, width=20, justify='center')
+            self.force_moment_entry.grid(row=1, column=2, sticky='E'+'W')
+            self.force_moment_entry.insert(0, self.force_moment)
         else:
             img = tkinter.PhotoImage(master=nroot, file=os.path.join(self.path, r'images/axis_orientation.png'))
             img = img.subsample(4, 4)
@@ -268,23 +259,27 @@ class UI:
         # remove old data from the dictionary
         for x in list(data.keys()): data[x].clear()
 
-        try:
-            while True:
-                line = test_data.readline()
-                if line == '': break
+        # try:
 
-                line = line.strip().split('\t')
-                line = [float(d.replace(',', '.')) if i!= 0 else d for i, d in enumerate(line)]
+        # load moment of force
+        if inpt_type == 'force': self.force_moment = float(test_data.readline())
 
-                if len(line) != len(list(data.keys())):
-                    # in case there are more arrtibutes in the input we need
-                    self.err_lab.config(text='invalid input data look at documentation')
-                    break
+        while True:
+            line = test_data.readline()
+            if line == '': break
 
-                # append the files to the dictionary which will be further used
-                for idx, column in enumerate(list(data.keys())): data[column].append(line[idx])
-        except:
-            # in case there are less arrtibutes in the input we need to handle
-            # an error
-            self.err_lab.config(text='invalid input data look at documentation')
+            line = line.strip().split('\t')
+            line = [float(d.replace(',', '.')) if i!= 0 else d for i, d in enumerate(line)]
+
+            if len(line) != len(list(data.keys())):
+                # in case there are more arrtibutes in the input we need
+                self.err_lab.config(text='invalid input data look at documentation')
+                break
+
+            # append the files to the dictionary which will be further used
+            for idx, column in enumerate(list(data.keys())): data[column].append(line[idx])
+        # except:
+        #     # in case there are less arrtibutes in the input we need to handle
+        #     # an error
+        #     self.err_lab.config(text='invalid input data look at documentation')
         

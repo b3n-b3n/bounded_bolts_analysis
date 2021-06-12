@@ -110,17 +110,15 @@ class Calculate:
     def sum_resulting_vectors(self):
         pass
 
-    def calc_driver(self, centroid, moment_of_force):
+    def calc_driver(self, centroid, force_moment):
         self.err_lab.config(text='')
         vect = self.aux.convert_to_vector(self.force)
 
-        print(moment_of_force)
-        moment_of_force = float(moment_of_force.get())
-
         self.shear_load(vect)
-        self.shear_load_moment(centroid, vect, moment_of_force)
+        self.shear_load_moment(centroid, vect, force_moment)
 
-        return self.aux.zip_vectors(self.res_vect['load_vector'],  self.res_vect['load_vector'])
+        # return self.aux.zip_vectors(self.res_vect['load_vector'],  self.res_vect['load-moment_vector'])
+        return self.res_vect['load-moment_vector']
         # tato funkcia vrati vysledny vektor do main s čoho sa to
         # potom prekreslí v sketchi
 

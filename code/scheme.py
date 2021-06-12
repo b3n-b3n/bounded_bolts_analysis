@@ -28,13 +28,15 @@ class Geometry:
                 pos_force[i] = [(pos_force[i][j]-mi) / (ma - mi) for j in range(len(pos_force[i]))]   
         return pos_bolt,  pos_force
     
-    def normalize_vector_size(self, max_vect, vect, max_size):
+
+    def normalize_vector_size(self, max_vect, vect, ipadd):
         # max_size is based of padding in the canvas
-        # max_vect is the vector with biggest size 
+        # max_vect is the vector with biggest size
         for vec in vect:
             for i in range(2):
-                vec[i] = vec[i]*max_size / max_vect
+                vec[i] = vec[i]*ipadd / max_vect
         return vect
+
 
     def convert_to_vector(self, size, angle):
         vec = []
@@ -44,12 +46,13 @@ class Geometry:
             vec.append([x,y])
         return vec
 
+
     def max_vector(self, v1, v2):
         out = 0
-        for i in v1: out = max(out, max(i[0], i[1]))
+        for i in v1: out = max([out, max(i, key=abs)], key=abs)
         if v2: 
-            for i in v2: out = max(out, max(i[0], i[1]))
-        return out
+            for i in v2: out = max([out, max(i, key=abs)], key=abs)
+        return abs(out)
 
 
 class Scheme():
@@ -124,11 +127,12 @@ class Scheme():
             self.g.create_text(x+self.labdist_force+self.fc_d, y-self.fc_d-self.labdist_force, text=force['name'][i], font=self.font[2])
 
     def draw_result_force(self, pos, size):
+        print(size)
         for i in range(len(pos[0])):
             x = self.ipadd + pos[0][i]*(self.cw-2*self.ipadd)
             y = self.ch - self.ipadd - pos[1][i]*(self.ch-2*self.ipadd)
-            x2 = size[i][0]
-            y2 =  size[i][1]
+            x2 = size[0][i]
+            y2 =  size[1][i]
             self.g.create_line(x, y, x+x2, y-y2, arrow=tkinter.LAST, fill='green')
     
     def check_diameter(self):

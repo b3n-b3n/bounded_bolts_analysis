@@ -84,7 +84,7 @@ def run_calculations():
     # a tkinter button cannot have more than one fuctions bounded to it 
     # try:
     centroid = calculate_centroid(inpt.bolt_info)
-    vect = calc.calc_driver(centroid, inpt.moment_of_force)
+    vect = calc.calc_driver(centroid, inpt.force_moment)
     print(vect)
     sktch.redraw(inpt.bolt_info, inpt.force_info, centroid, vect)
     # except:

@@ -4,7 +4,6 @@
 - ### náčrt
   - ako sa chce robiť report budú tam aj vstupné údaje pre šróby 
   - v náčrte používam diameter ako radius bude to vadiť? proporčne to je jedno
-  - maximálna veľkosť vektora bude šírka okraju, je to postačujúce?
 
 
 ### spôsov výpočtu
