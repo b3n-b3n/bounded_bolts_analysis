@@ -13,17 +13,16 @@ class Geometry:
         diameter = numpy.array(bolt["diameter[mm]"], dtype=numpy.float64)
         centroid = numpy.array(centroid, dtype=numpy.float64)
         
-        merged = pos_bolt + pos_force
-        print(merged)
-        mi, ma = numpy.min(merged), numpy.max(merged)
+        mi = min(numpy.min(pos_bolt), numpy.min(pos_force))
+        ma = max(numpy.max(pos_bolt), numpy.max(pos_force))
         # if mi == ma:
         #     pos_bolt[i] = [0.5 for _ in pos_bolt[i]]
         #     pos_force[i] = [0.5 for _ in pos_force[i]]
         # else:
-        pos_bolt = pos_bolt / (ma-mi)
-        pos_force = pos_force / (ma-mi)
+        pos_bolt = (pos_bolt-mi) / (ma-mi)
+        pos_force = (pos_force-mi) / (ma-mi)
         diameter = diameter / (ma-mi)
-        centroid = centroid / (ma-mi)
+        centroid = (centroid-mi) / (ma-mi)
         # [(pos_bolt[i][j]-mi) / (ma - mi) for j in range(len(pos_bolt[i]))]   
         # pos_force[i] = [(pos_force[i][j]-mi) / (ma - mi) for j in range(len(pos_force[i]))]   
         
@@ -119,7 +118,7 @@ class Scheme():
         for i in range(len(pos[0])):
             x = self.ipadd + pos[0][i]*(self.cw-2*self.ipadd)
             y = self.ch - self.ipadd - pos[1][i]*(self.ch-2*self.ipadd)
-            r = d[i]*(self.cw-2*self.ipadd)/2
+            r = d[i]/2
             self.g.create_oval(x-r, y-r, x+r, y+r)
             # axes
             self.g.create_line(x, y-r*axis_ratio, x, y+r*axis_ratio, dash=(4,2))
