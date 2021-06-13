@@ -21,8 +21,9 @@ class Geometry:
         # else:
         pos_bolt = (pos_bolt-mi) / (ma-mi)
         pos_force = (pos_force-mi) / (ma-mi)
-        diameter = diameter / (ma-mi)
+        diameter = (diameter-mi) / (ma-mi)
         centroid = (centroid-mi) / (ma-mi)
+        print(diameter)
         # [(pos_bolt[i][j]-mi) / (ma - mi) for j in range(len(pos_bolt[i]))]   
         # pos_force[i] = [(pos_force[i][j]-mi) / (ma - mi) for j in range(len(pos_force[i]))]   
         
@@ -80,7 +81,7 @@ class Scheme():
         self.allowed_diameter = 60  # maximum allowed diameter of a bolt
         self.axis_size = 50  # indicating axis
         self.axis_dist = 20  # disance from the edge
-        self.labdist_bolt = 2  # distance of label form the bolt
+        self.labdist_bolt = 1  # distance of label form the bolt
         self.labdist_force = 10 # distance of label form the force point
 
         self.geo = Geometry()
@@ -118,7 +119,7 @@ class Scheme():
         for i in range(len(pos[0])):
             x = self.ipadd + pos[0][i]*(self.cw-2*self.ipadd)
             y = self.ch - self.ipadd - pos[1][i]*(self.ch-2*self.ipadd)
-            r = d[i]/2
+            r = d[i]/2*(self.cw-2*self.ipadd)
             self.g.create_oval(x-r, y-r, x+r, y+r)
             # axes
             self.g.create_line(x, y-r*axis_ratio, x, y+r*axis_ratio, dash=(4,2))
