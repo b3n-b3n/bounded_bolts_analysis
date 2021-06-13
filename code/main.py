@@ -1,5 +1,4 @@
-# general libraries
-from tkinter.constants import NONE
+# libraries
 import tkinter.filedialog
 import pyautogui
 import tkinter

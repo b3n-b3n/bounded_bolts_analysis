@@ -7,26 +7,27 @@ class Geometry:
     def __init__(self):
         pass
 
-    def normalize_coordiantes(self, bolt, force):
-        xy = ['x-pos[mm]', 'y-pos[mm]']   # name of keys from dict
-        pos_bolt = ['', '']  # first is x coordinate then y
-        pos_force = ['', '']
-
-        for i in range(2):  # normalizing input of position
-            pos_bolt[i], pos_force[i] = bolt[xy[i]], force[xy[i]]
-            pos_bolt[i] = [float(pos_bolt[i][j]) for j in range(len(pos_bolt[i]))]
-            pos_force[i] = [float(pos_force[i][j]) for j in range(len(pos_force[i]))]
-            
-            merged = pos_bolt[i] + pos_force[i]
-            mi, ma = min(merged), max(merged)
-            if mi == ma:
-                pos_bolt[i] = [0.5 for _ in pos_bolt[i]]
-                pos_force[i] = [0.5 for _ in pos_force[i]]
-            else:
-                # tu si skoncil g
-                pos_bolt[i] = [(pos_bolt[i][j]-mi) / (ma - mi) for j in range(len(pos_bolt[i]))]   
-                pos_force[i] = [(pos_force[i][j]-mi) / (ma - mi) for j in range(len(pos_force[i]))]   
-        return pos_bolt,  pos_force
+    def normalize_coordiantes(self, bolt, force, centroid):
+        pos_bolt = numpy.array([bolt["x-pos[mm]"], bolt["y-pos[mm]"]], dtype=numpy.float64)
+        pos_force = numpy.array([force["x-pos[mm]"], force["y-pos[mm]"]], dtype=numpy.float64)
+        diameter = numpy.array(bolt["diameter[mm]"], dtype=numpy.float64)
+        centroid = numpy.array(centroid, dtype=numpy.float64)
+        
+        merged = pos_bolt + pos_force
+        print(merged)
+        mi, ma = numpy.min(merged), numpy.max(merged)
+        # if mi == ma:
+        #     pos_bolt[i] = [0.5 for _ in pos_bolt[i]]
+        #     pos_force[i] = [0.5 for _ in pos_force[i]]
+        # else:
+        pos_bolt = pos_bolt / (ma-mi)
+        pos_force = pos_force / (ma-mi)
+        diameter = diameter / (ma-mi)
+        centroid = centroid / (ma-mi)
+        # [(pos_bolt[i][j]-mi) / (ma - mi) for j in range(len(pos_bolt[i]))]   
+        # pos_force[i] = [(pos_force[i][j]-mi) / (ma - mi) for j in range(len(pos_force[i]))]   
+        
+        return pos_bolt, pos_force, centroid, diameter
     
 
     def normalize_vector_size(self, max_vect, vect, ipadd):
@@ -55,6 +56,17 @@ class Geometry:
         return abs(out)
 
 
+    def check_colission(self, i, j, pos, d):
+        dx = abs(pos[0][i] - pos[0][j])
+        dy = abs(pos[1][i] - pos[1][j])
+        rSum = d[i]/2 + d[j]/2  # sum of radiuses
+        dist = math.sqrt(dx**2 + dy**2)
+
+        if rSum > dist: return (True, dist)
+        else: return (False, None)
+
+
+
 class Scheme():
     """creates scheme"""
 
@@ -64,13 +76,15 @@ class Scheme():
         self.font = font
         self.err_lab = err_lab
 
-        self.ipadd = 85  # inside canvas padding
+        self.ipadd = 90  # inside canvas padding
         self.fc_d = 3  # force point diameter
-        self.allowed_diameter = 30  # maximum allowed diameter of a bolt
+        self.allowed_diameter = 60  # maximum allowed diameter of a bolt
         self.axis_size = 50  # indicating axis
         self.axis_dist = 20  # disance from the edge
         self.labdist_bolt = 2  # distance of label form the bolt
         self.labdist_force = 10 # distance of label form the force point
+
+        self.geo = Geometry()
 
 
     def resize(self, r, pos, ipadd, cw, ch):  # recursive function for resizing diameter
@@ -105,12 +119,13 @@ class Scheme():
         for i in range(len(pos[0])):
             x = self.ipadd + pos[0][i]*(self.cw-2*self.ipadd)
             y = self.ch - self.ipadd - pos[1][i]*(self.ch-2*self.ipadd)
-            self.g.create_oval(x-d[i], y-d[i], x+d[i], y+d[i])
+            r = d[i]*(self.cw-2*self.ipadd)/2
+            self.g.create_oval(x-r, y-r, x+r, y+r)
             # axes
-            self.g.create_line(x, y-d[i]*axis_ratio, x, y+d[i]*axis_ratio, dash=(4,2))
-            self.g.create_line(x-d[i]*axis_ratio, y, x+d[i]*axis_ratio, y, dash=(4,2))
+            self.g.create_line(x, y-r*axis_ratio, x, y+r*axis_ratio, dash=(4,2))
+            self.g.create_line(x-r*axis_ratio, y, x+r*axis_ratio, y, dash=(4,2))
             # label
-            self.g.create_text(x+d[i]+self.labdist_bolt, y-d[i]-self.labdist_bolt, text=bolt['name'][i], font=self.font[2])
+            self.g.create_text(x+r+self.labdist_bolt, y-r-self.labdist_bolt, text=bolt['name'][i], font=self.font[2])
 
 
     def draw_force(self, pos, size, force):
@@ -134,51 +149,62 @@ class Scheme():
             y2 =  size[i][1]
             self.g.create_line(x, y, x+x2, y-y2, arrow=tkinter.LAST, fill='green')
     
-    def check_diameter(self):
-        pass
+
+    def solve_colisions(self, pos, diameters):
+        """
+        after collision has been detected all diameters are resized
+        this is repleated untill there are no collisions
+        """
+        count = 0
+        l = len(pos[0])  # lenght of array with the bolts
+        while count < l:
+            for i in range(count, l):
+                collision, dist = self.geo.check_colission(count, i, pos, diameters)
+                if collision:
+                    count = 0
+                    ratio = dist / (diameters[count]/2 + diameters[i]/2)
+                    diameters *= ratio
+            count += 1
+        return diameters
 
     
-    def chceck_force(self):
-        pass
+    def resize_diameter(self, bolt, posb):
+        diameters = numpy.array(bolt['diameter[mm]'], dtype=numpy.float64)
+        diameters *= self.allowed_diameter / max(diameters) 
+        # make sure nothing overlaps
+        # diameters = self.solve_colisions(posb, diameters)
+        return diameters
 
-   
+
     def redraw(self, bolt, force, centroid, res_vect):
         # clear the canvas before drawing the new scheme     
         self.g.delete('all')
 
-        # normalize centroid coordinates along with the bolts
-        bolt_args = copy.deepcopy(bolt)
-        bolt_args['x-pos[mm]'].append(centroid[0])
-        bolt_args['y-pos[mm]'].append(centroid[1])
+        # ADJUST THE DATA  ----------------------------------------------------------
+        # normalize bolt coordinates along with the centroid
+        
+        # bolt_args = copy.deepcopy(bolt)
+        # bolt_args['x-pos[mm]'].append(centroid[0])
+        # bolt_args['y-pos[mm]'].append(centroid[1])
 
         # normalize input to interval [0, 1]
-        posb, posf = Geometry.normalize_coordiantes(None, bolt_args, force)
+        posb, posf, centroid, diameters = self.geo.normalize_coordiantes(bolt, force, centroid)
         
-        # # get back centroid coordinates
-        centroid[0] = posb[0].pop()
-        centroid[1] = posb[1].pop()
+        # get back centroid coordinates
+        # centroid = [posb[0].pop(), posb[1].pop()]
         
-        # resize the diamter
-        diameters = numpy.array(bolt['diameter[mm]'], dtype=numpy.float64)
-        diameters *= self.allowed_diameter / max(diameters) 
+        # # resize the diamter and resolve overlaping 
+        # diameters = self.resize_diameter(bolt, posb)
+            
+        load_vect = self.geo.convert_to_vector(force['size[N]'], force['angle[deg]'])
+        max_vect = self.geo.max_vector(load_vect, res_vect)
 
-        # if res_vect: Geometry.normalize_vector_size(res_vect)
-        
-        load_vect = Geometry.convert_to_vector(None, force['size[N]'], force['angle[deg]'])
-        max_vect = Geometry.max_vector(None, load_vect, res_vect)
+        load_vect = self.geo.normalize_vector_size(max_vect, load_vect, self.ipadd)
+        if res_vect: res_vect = self.geo.normalize_vector_size(max_vect, res_vect, self.ipadd)
 
-        load_vect = Geometry.normalize_vector_size(None, max_vect, load_vect, self.ipadd)
-        if res_vect: res_vect = Geometry.normalize_vector_size(None, max_vect, res_vect, self.ipadd)
-        
-        # resize the force
-        # make sure nothing overlaps
-        # self.check_diameter(posb, bolt)
-        # self.chceck_force(posf, force)
-
+        # CREATING THE SCHEME ---------------------------------------------------------=
         # margin area
-        self.g.create_rectangle(0+self.ipadd, 0+self.ipadd, self.cw-self.ipadd, self.ch-self.ipadd, fill='white')
-        
-        # draw scheme
+        self.g.create_rectangle(0+self.ipadd, 0+self.ipadd, self.cw-self.ipadd, self.ch-self.ipadd, fill='white', outline='white')
         self.indicate_axis()
         self.draw_bolts(posb, diameters, bolt)
         self.draw_force(posf, load_vect, force)
@@ -186,8 +212,6 @@ class Scheme():
         
         if res_vect: self.draw_result_force(posb, res_vect)
         self.g.update()
-        # d = [ float(self.bolt_info['diameter'][i]) for i in range(len(self.bolt_info['diameter']))]  # diameters of bolts
-        # r = self.resize(r, pos, ipadd, cw, ch)
         
     def idk(self):
         print('jes ty kokoos')
