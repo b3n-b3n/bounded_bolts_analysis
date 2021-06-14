@@ -28,8 +28,7 @@ relief = 'groove'
 font = [('ms sans', '13'), ('ms sans', '11'), ('ms sans', '9')]
 
 
-g = tkinter.Canvas(root, width=cw, height=ch, bg='grey80',
-                   highlightthickness=0)  # 1000x600
+g = tkinter.Canvas(root, width=cw, height=ch, bg='grey80', highlightthickness=0)
 g.grid(row=1, column=1, rowspan=2, sticky='s')
 
 err_lab = tkinter.Label(root, text='',
@@ -106,7 +105,7 @@ def create_buttons(sktch, inpt):
 
 
 inpt = input_interface.UI(root, bg, font, sp_bolt, sp_force, dname, err_lab)
-sktch = scheme.Scheme(g, inpt, cw, ch, err_lab, font)
+sktch = scheme.Scheme(g, inpt, cw, ch, err_lab, font, dname)
 calc = calc.Calculate(err_lab, inpt)
 create_buttons(sktch, inpt)
 

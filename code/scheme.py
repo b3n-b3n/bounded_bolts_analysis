@@ -1,7 +1,8 @@
 import tkinter
 import numpy
 import math
-import copy
+import PIL
+import os
 
 class Geometry:
     def __init__(self):
@@ -70,13 +71,14 @@ class Geometry:
 class Scheme():
     """creates scheme"""
 
-    def __init__(self, g, input, cw, ch, err_lab, font):
+    def __init__(self, g, input, cw, ch, err_lab, font, dname):
         self.g = g
         self.cw, self.ch = cw, ch
         self.font = font
         self.err_lab = err_lab
+        self.path = dname
 
-        self.ipadd = 90  # inside canvas padding
+        self.ipadd = 95  # inside canvas padding
         self.fc_d = 3  # force point diameter
         self.allowed_diameter = 60  # maximum allowed diameter of a bolt
         self.axis_size = 50  # indicating axis
@@ -85,6 +87,12 @@ class Scheme():
         self.labdist_force = 10 # distance of label form the force point
 
         self.geo = Geometry()
+        
+        img_path_positive = os.path.join(self.path, r'images/positive_force_moment2.png')
+        self.img_positive_moment = tkinter.PhotoImage(file=img_path_positive).subsample(5,5)
+
+        img_path_negative = os.path.join(self.path, r'images/negative_force_moment2.png')
+        self.img_negative_moment = tkinter.PhotoImage(file=img_path_negative).subsample(5,5)
 
 
     def resize(self, r, pos, ipadd, cw, ch):  # recursive function for resizing diameter
@@ -120,7 +128,7 @@ class Scheme():
             x = self.ipadd + pos[0][i]*(self.cw-2*self.ipadd)
             y = self.ch - self.ipadd - pos[1][i]*(self.ch-2*self.ipadd)
             r = d[i]/2*(self.cw-2*self.ipadd)
-            self.g.create_oval(x-r, y-r, x+r, y+r)
+            self.g.create_oval(x-r, y-r, x+r, y+r, width=2)
             # axes
             self.g.create_line(x, y-r*axis_ratio, x, y+r*axis_ratio, dash=(4,2))
             self.g.create_line(x-r*axis_ratio, y, x+r*axis_ratio, y, dash=(4,2))
@@ -181,20 +189,8 @@ class Scheme():
         self.g.delete('all')
 
         # ADJUST THE DATA  ----------------------------------------------------------
-        # normalize bolt coordinates along with the centroid
-        
-        # bolt_args = copy.deepcopy(bolt)
-        # bolt_args['x-pos[mm]'].append(centroid[0])
-        # bolt_args['y-pos[mm]'].append(centroid[1])
-
         # normalize input to interval [0, 1]
         posb, posf, centroid, diameters = self.geo.normalize_coordiantes(bolt, force, centroid)
-        
-        # get back centroid coordinates
-        # centroid = [posb[0].pop(), posb[1].pop()]
-        
-        # # resize the diamter and resolve overlaping 
-        # diameters = self.resize_diameter(bolt, posb)
             
         load_vect = self.geo.convert_to_vector(force['size[N]'], force['angle[deg]'])
         max_vect = self.geo.max_vector(load_vect, res_vect)
@@ -205,12 +201,17 @@ class Scheme():
         # CREATING THE SCHEME ---------------------------------------------------------=
         # margin area
         self.g.create_rectangle(0+self.ipadd, 0+self.ipadd, self.cw-self.ipadd, self.ch-self.ipadd, fill='white', outline='white')
+        
         self.indicate_axis()
         self.draw_bolts(posb, diameters, bolt)
         self.draw_force(posf, load_vect, force)
         self.draw_centroid(centroid)
         
         if res_vect: self.draw_result_force(posb, res_vect)
+
+        img_path = os.path.join(self.path, r'images/positive_force_moment.png')
+        self.g.create_image(self.cw-self.ipadd/2, self.ch/2, image=self.img_positive_moment)
+
         self.g.update()
         
     def idk(self):
