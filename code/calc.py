@@ -12,8 +12,8 @@ class Auxilliary:
     def convert_to_vector(self, force):
         vec = []
         for i in range(len(force['name'])):
-            x = math.cos(math.radians(force['angle[deg]'][i])) * force['size[N]'][i]
-            y = math.sin(math.radians(force['angle[deg]'][i])) * force['size[N]'][i]
+            x = math.cos(math.radians(force['angle[deg]'][i])) * force['force[N]'][i]
+            y = math.sin(math.radians(force['angle[deg]'][i])) * force['force[N]'][i]
             vec.append((x,y))
         return vec
 
@@ -103,7 +103,7 @@ class Calculate:
                 finVec[1] += M*(Ai*Gi*d / sA)
                 # this here needs to be done
             out.append(finVec)
-        return out
+        return out, M
            
 
     def sum_resulting_vectors(self):
@@ -114,7 +114,9 @@ class Calculate:
         vect = self.aux.convert_to_vector(self.force)
 
         shear_load = self.aux.invert_vector(self.shear_load(vect))
-        shear_load_moment = self.aux.invert_vector(self.shear_load_moment(centroid, vect, force_moment))
+        
+        shear_load_moment, force_moment = self.shear_load_moment(centroid, vect, force_moment)
+        shear_load_moment = self.aux.invert_vector(shear_load_moment)
 
         # return self.aux.zip_vectors(self.res_vect['load_vector'],  self.res_vect['load-moment_vector'])
-        return shear_load
+        return shear_load, force_moment

@@ -143,11 +143,11 @@ class UI:
                         err_lab.config(text='all entrys must be filled')
                         return
             
-            self.force_moment = float(self.force_moment_entry.get()) 
 
             if table_type == 'bolt':
                 self.bolt_info = info.copy()
             else:
+                self.force_moment = float(self.force_moment_entry.get()) 
                 self.force_info = info.copy()
             return 'ok'
 

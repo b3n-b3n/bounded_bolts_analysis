@@ -24,9 +24,6 @@ class Geometry:
         pos_force = (pos_force-mi) / (ma-mi)
         diameter = (diameter-mi) / (ma-mi)
         centroid = (centroid-mi) / (ma-mi)
-        print(diameter)
-        # [(pos_bolt[i][j]-mi) / (ma - mi) for j in range(len(pos_bolt[i]))]   
-        # pos_force[i] = [(pos_force[i][j]-mi) / (ma - mi) for j in range(len(pos_force[i]))]   
         
         return pos_bolt, pos_force, centroid, diameter
     
@@ -87,7 +84,11 @@ class Scheme():
         self.labdist_force = 10 # distance of label form the force point
 
         self.geo = Geometry()
+        # centroid which is passed in from main this one is not resized and 
+        # could be used when image needs to be redrawn
+        self.centroid = [0, 0]
         
+        # paths to images
         img_path_positive = os.path.join(self.path, r'images/positive_force_moment2.png')
         self.img_positive_moment = tkinter.PhotoImage(file=img_path_positive).subsample(5,5)
 
@@ -145,7 +146,7 @@ class Scheme():
             # size
             x2 = size[i][0]
             y2 =  size[i][1]
-            self.g.create_line(x, y, x+x2, y-y2, arrow=tkinter.LAST, fill='red')
+            self.g.create_line(x, y, x+x2, y-y2, arrow=tkinter.LAST, fill='red', width=2)
             # label
             self.g.create_text(x+self.labdist_force+self.fc_d, y-self.fc_d-self.labdist_force, text=force['name'][i], font=self.font[2])
 
@@ -155,27 +156,15 @@ class Scheme():
             y = self.ch - self.ipadd - pos[1][i]*(self.ch-2*self.ipadd)
             x2 = size[i][0]
             y2 =  size[i][1]
-            self.g.create_line(x, y, x+x2, y-y2, arrow=tkinter.LAST, fill='green')
+            self.g.create_line(x, y, x+x2, y-y2, arrow=tkinter.LAST, fill='green', width=2)
+
+
+    def draw_force_moment(self, force_moment):
+        if force_moment > 0: img = self.img_positive_moment
+        else: img = self.img_negative_moment
+        self.g.create_image(self.cw-self.ipadd/2, self.ch/2, image=img)
     
 
-    def solve_colisions(self, pos, diameters):
-        """
-        after collision has been detected all diameters are resized
-        this is repleated untill there are no collisions
-        """
-        count = 0
-        l = len(pos[0])  # lenght of array with the bolts
-        while count < l:
-            for i in range(count, l):
-                collision, dist = self.geo.check_colission(count, i, pos, diameters)
-                if collision:
-                    count = 0
-                    ratio = dist / (diameters[count]/2 + diameters[i]/2)
-                    diameters *= ratio
-            count += 1
-        return diameters
-
-    
     def resize_diameter(self, bolt, posb):
         diameters = numpy.array(bolt['diameter[mm]'], dtype=numpy.float64)
         diameters *= self.allowed_diameter / max(diameters) 
@@ -184,19 +173,28 @@ class Scheme():
         return diameters
 
 
-    def redraw(self, bolt, force, centroid, res_vect):
+    def redraw(self, bolt, force, res_vect, force_moment, self_call):
         # clear the canvas before drawing the new scheme     
         self.g.delete('all')
+        if not self_call: self.ipadd = 95
 
+        
+        print(self.centroid)
         # ADJUST THE DATA  ----------------------------------------------------------
         # normalize input to interval [0, 1]
-        posb, posf, centroid, diameters = self.geo.normalize_coordiantes(bolt, force, centroid)
-            
-        load_vect = self.geo.convert_to_vector(force['size[N]'], force['angle[deg]'])
+        posb, posf, centroid, diameters = self.geo.normalize_coordiantes(bolt, force, self.centroid)
+        
+        maxr = max(diameters)/2*(self.cw-2*self.ipadd) # maximal radius
+        if maxr > self.ipadd:
+            self.ipadd = maxr
+            self.redraw(bolt, force, res_vect, force_moment, True)
+
+        load_vect = self.geo.convert_to_vector(force['force[N]'], force['angle[deg]'])
         max_vect = self.geo.max_vector(load_vect, res_vect)
 
         load_vect = self.geo.normalize_vector_size(max_vect, load_vect, self.ipadd)
         if res_vect: res_vect = self.geo.normalize_vector_size(max_vect, res_vect, self.ipadd)
+
 
         # CREATING THE SCHEME ---------------------------------------------------------=
         # margin area
@@ -208,9 +206,7 @@ class Scheme():
         self.draw_centroid(centroid)
         
         if res_vect: self.draw_result_force(posb, res_vect)
-
-        img_path = os.path.join(self.path, r'images/positive_force_moment.png')
-        self.g.create_image(self.cw-self.ipadd/2, self.ch/2, image=self.img_positive_moment)
+        if force_moment: self.draw_force_moment(force_moment)
 
         self.g.update()
         

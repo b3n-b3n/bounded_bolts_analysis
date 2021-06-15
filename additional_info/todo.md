@@ -20,9 +20,9 @@
     separate the table into a different class
         get on with a numerous errors this will cause
 (B) SCHEME  {c}
-    resizsing
-        resize diameters of bolts
-        resize force
+    resizsing {cm:2021-06-14}
+        resize diameters of bolts {cm:2021-06-14}
+        resize force {cm:2021-06-14}
         make a larger padding frame {cm:2021-06-05}
         check for overlaping
     axis {cm:2021-06-05}

@@ -47,7 +47,7 @@ sp_bolt = {'name': [''],
 
 # sample force
 sp_force = {'name': [''],
-            'size[N]': [''],
+            'force[N]': [''],
             'x-pos[mm]': [''],
             'y-pos[mm]': [''],
             'angle[deg]': ['']}
@@ -72,7 +72,8 @@ def redraw_scheme():
     # a tkinter button cannot have more than one fuctions bounded to it 
     # try:
     centroid = calculate_centroid(inpt.bolt_info)
-    sktch.redraw(inpt.bolt_info, inpt.force_info, centroid, None)
+    sktch.centroid = centroid
+    sktch.redraw(inpt.bolt_info, inpt.force_info, None, None, False)
     # except:
     #     # if the user inputs wrong data manually
     #     err_lab.config(text='there are none or invalid geometry and/or force data')
@@ -82,9 +83,10 @@ def run_calculations():
     # a tkinter button cannot have more than one fuctions bounded to it 
     # try:
     centroid = calculate_centroid(inpt.bolt_info)
-    vect = calc.calc_driver(centroid, inpt.force_moment)
+    vect, force_moment = calc.calc_driver(centroid, inpt.force_moment)
     print(vect)
-    sktch.redraw(inpt.bolt_info, inpt.force_info, centroid, vect)
+    print(inpt.bolt_info['name'])
+    sktch.redraw(inpt.bolt_info, inpt.force_info, centroid, vect, force_moment)
     # except:
     #     # if the user inputs wrong data manually
     #     err_lab.config(text='there are none or invalid geometry and/or force data')
