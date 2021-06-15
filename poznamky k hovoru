@@ -1,9 +1,0 @@
-prepísať vo vstupe pre silu size na force
-convert rad to deg na uhol pre sily
-
-pridaj 2.6 ku vypoctu pre g 
-
-prehodť to na štandardný súradný systém
-xpos - xpos[mm]
-
-zmeniť výsledný vektor na reakčný (*-1)

@@ -84,16 +84,13 @@ class Scheme():
         self.labdist_force = 10 # distance of label form the force point
 
         self.geo = Geometry()
-        # centroid which is passed in from main this one is not resized and 
-        # could be used when image needs to be redrawn
-        self.centroid = [0, 0]
         
         # paths to images
         img_path_positive = os.path.join(self.path, r'images/positive_force_moment2.png')
-        self.img_positive_moment = tkinter.PhotoImage(file=img_path_positive).subsample(5,5)
+        self.img_positive_moment = tkinter.PhotoImage(file=img_path_positive).subsample(6,6)
 
         img_path_negative = os.path.join(self.path, r'images/negative_force_moment2.png')
-        self.img_negative_moment = tkinter.PhotoImage(file=img_path_negative).subsample(5,5)
+        self.img_negative_moment = tkinter.PhotoImage(file=img_path_negative).subsample(6,6)
 
 
     def resize(self, r, pos, ipadd, cw, ch):  # recursive function for resizing diameter
@@ -134,7 +131,7 @@ class Scheme():
             self.g.create_line(x, y-r*axis_ratio, x, y+r*axis_ratio, dash=(4,2))
             self.g.create_line(x-r*axis_ratio, y, x+r*axis_ratio, y, dash=(4,2))
             # label
-            self.g.create_text(x+r+self.labdist_bolt, y-r-self.labdist_bolt, text=bolt['name'][i], font=self.font[2])
+            self.g.create_text(x+r+self.labdist_bolt, y-r-self.labdist_bolt, text=bolt['name'][i], font=self.font[1])
 
 
     def draw_force(self, pos, size, force):
@@ -148,7 +145,8 @@ class Scheme():
             y2 =  size[i][1]
             self.g.create_line(x, y, x+x2, y-y2, arrow=tkinter.LAST, fill='red', width=2)
             # label
-            self.g.create_text(x+self.labdist_force+self.fc_d, y-self.fc_d-self.labdist_force, text=force['name'][i], font=self.font[2])
+            self.g.create_text(x+self.labdist_force+self.fc_d, y-self.fc_d-self.labdist_force, text=force['name'][i], font=self.font[1])
+
 
     def draw_result_force(self, pos, size):
         for i in range(len(pos[0])):
@@ -165,29 +163,20 @@ class Scheme():
         self.g.create_image(self.cw-self.ipadd/2, self.ch/2, image=img)
     
 
-    def resize_diameter(self, bolt, posb):
-        diameters = numpy.array(bolt['diameter[mm]'], dtype=numpy.float64)
-        diameters *= self.allowed_diameter / max(diameters) 
-        # make sure nothing overlaps
-        # diameters = self.solve_colisions(posb, diameters)
-        return diameters
-
-
-    def redraw(self, bolt, force, res_vect, force_moment, self_call):
+    def redraw(self, bolt, force, centroid, res_vect, force_moment):
         # clear the canvas before drawing the new scheme     
         self.g.delete('all')
-        if not self_call: self.ipadd = 95
-
+        self.ipadd = 95
         
-        print(self.centroid)
+
         # ADJUST THE DATA  ----------------------------------------------------------
         # normalize input to interval [0, 1]
-        posb, posf, centroid, diameters = self.geo.normalize_coordiantes(bolt, force, self.centroid)
+        posb, posf, centroid, diameters = self.geo.normalize_coordiantes(bolt, force, centroid)
         
-        maxr = max(diameters)/2*(self.cw-2*self.ipadd) # maximal radius
+        maxr = max(diameters)/2*(self.cw-2*self.ipadd)
+        # print(maxr)
         if maxr > self.ipadd:
             self.ipadd = maxr
-            self.redraw(bolt, force, res_vect, force_moment, True)
 
         load_vect = self.geo.convert_to_vector(force['force[N]'], force['angle[deg]'])
         max_vect = self.geo.max_vector(load_vect, res_vect)
