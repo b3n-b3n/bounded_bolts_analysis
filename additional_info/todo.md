@@ -31,5 +31,9 @@
         add name to each bolt in scheme {cm:2021-06-05}
         name the centroid {cm:2021-06-05}
         add name to each force in the scheme {cm:2021-06-05}
+    use exclusively input moment of force in the image
 (C) GENERATING A REPORT
 (D) DOCUMENTATION
+
+
+do some checkups
