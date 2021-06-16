@@ -83,6 +83,7 @@ def run_calculations():
     # try:
     centroid = calculate_centroid(inpt.bolt_info)
     vect, force_moment = calc.calc_driver(centroid, inpt.force_moment)
+    print(inpt.bolt_info)
     sktch.redraw(inpt.bolt_info, inpt.force_info, centroid, vect, force_moment)
     # except:
     #     # if the user inputs wrong data manually
@@ -104,7 +105,7 @@ def create_buttons(sktch, inpt):
 
 
 inpt = input_interface.UI(root, bg, font, sp_bolt, sp_force, dname, err_lab)
-sktch = scheme.Scheme(g, inpt, cw, ch, err_lab, font, dname)
+sktch = scheme.Scheme(g, inpt, cw, ch, err_lab, font, dname, inpt)
 calc = calc.Calculate(err_lab, inpt)
 create_buttons(sktch, inpt)
 

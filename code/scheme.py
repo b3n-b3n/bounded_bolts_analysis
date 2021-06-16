@@ -68,7 +68,7 @@ class Geometry:
 class Scheme():
     """creates scheme"""
 
-    def __init__(self, g, input, cw, ch, err_lab, font, dname):
+    def __init__(self, g, input, cw, ch, err_lab, font, dname, inpt):
         self.g = g
         self.cw, self.ch = cw, ch
         self.font = font
@@ -84,6 +84,7 @@ class Scheme():
         self.labdist_force = 10 # distance of label form the force point
 
         self.geo = Geometry()
+        self.inpt = inpt # this is instante to the inputer interface UI class
         
         # paths to images
         img_path_positive = os.path.join(self.path, r'images/positive_force_moment2.png')
@@ -161,6 +162,7 @@ class Scheme():
         if force_moment > 0: img = self.img_positive_moment
         else: img = self.img_negative_moment
         self.g.create_image(self.cw-self.ipadd/2, self.ch/2, image=img)
+        self.g.create_text(self.cw-self.ipadd/2, self.ch/2, text=self.inpt.force_moment_label)
     
 
     def redraw(self, bolt, force, centroid, res_vect, force_moment):

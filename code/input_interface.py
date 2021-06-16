@@ -15,8 +15,10 @@ class UI:
         self.err_lab = err_lab
         self.force_info = force
         
-        self.force_moment = ''
         self.force_moment_entry = None
+        self.force_moment_entry_name = None
+        self.force_moment = ''
+        self.force_moment_label = 'M'
 
         # --LABELFRAMES------------------------------------------------------------------
         self.inputs = tkinter.LabelFrame(
@@ -147,7 +149,8 @@ class UI:
             if table_type == 'bolt':
                 self.bolt_info = info.copy()
             else:
-                self.force_moment = float(self.force_moment_entry.get()) 
+                self.force_moment = float(self.force_moment_entry.get())
+                self.force_moment_label = self.force_moment_entry_name.get()
                 self.force_info = info.copy()
             return 'ok'
 
@@ -201,14 +204,19 @@ class UI:
         # display image of axis orientation
         if table_type == 'force':
             img = tkinter.PhotoImage(master=nroot, file=os.path.join(self.path, r'images/angle_orientation.png'))
-            img = img.subsample(4, 4)
+            img = img.subsample(3, 3)
             img_lab = tkinter.Label(nroot, image=img)
-            img_lab.grid(row=0, column=3, rowspan=3)
-            
-            tkinter.Label(nroot, text='force moment[N*mm]').grid(row=1, column=0, columnspan=2)
-            self.force_moment_entry = tkinter.Entry(nroot, width=20, justify='center')
-            self.force_moment_entry.grid(row=1, column=2, sticky='E'+'W')
+            img_lab.grid(row=0, column=3, columnspan=2, sticky='N')
+
+            tkinter.Label(nroot, text='force moment[N*mm]').grid(row=1, column=3)
+            self.force_moment_entry = tkinter.Entry(nroot, width=15,justify='center')
+            self.force_moment_entry.grid(row=1, column=4, sticky='W')
             self.force_moment_entry.insert(0, self.force_moment)
+
+            tkinter.Label(nroot, text='moment name').grid(row=2, column=3)
+            self.force_moment_entry_name = tkinter.Entry(nroot, width=15, justify='center')
+            self.force_moment_entry_name.grid(row=2, column=4, sticky='W')
+            self.force_moment_entry_name.insert(0, self.force_moment_label)
         else:
             img = tkinter.PhotoImage(master=nroot, file=os.path.join(self.path, r'images/axis_orientation.png'))
             img = img.subsample(4, 4)
@@ -216,12 +224,9 @@ class UI:
             img_lab.grid(row=0, column=3, rowspan=1)
 
 
-        tkinter.Button(nroot, text='add row', command=lambda: add_row()).grid(
-            row=2, column=0, sticky='n'+'s'+'e'+'w')
-        tkinter.Button(nroot, text='delete row', command=lambda: remove_row()).grid(
-            row=2, column=1, sticky='n'+'s'+'e'+'w')
-        tkinter.Button(nroot, text='submit data', command=submit_data).grid(
-            row=2, column=2, sticky='n'+'s'+'e'+'w')
+        tkinter.Button(nroot, text='add row', command=lambda: add_row()).grid(row=1, column=0, rowspan=2, sticky='n'+'s'+'e'+'w')
+        tkinter.Button(nroot, text='delete row', command=lambda: remove_row()).grid(row=1, column=1, rowspan=2, sticky='n'+'s'+'e'+'w')
+        tkinter.Button(nroot, text='submit data', command=submit_data).grid(row=1, column=2, rowspan=2, sticky='n'+'s'+'e'+'w')
         nroot.bind('<Tab>', select_entry)
         nroot.mainloop()
 
