@@ -37,3 +37,4 @@
 
 
 do some checkups
+generate text or csv output
