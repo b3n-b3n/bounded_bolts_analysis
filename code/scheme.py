@@ -158,14 +158,14 @@ class Scheme():
             self.g.create_line(x, y, x+x2, y-y2, arrow=tkinter.LAST, fill='green', width=2)
 
 
-    def draw_force_moment(self, force_moment):
-        if force_moment > 0: img = self.img_positive_moment
+    def draw_force_moment(self):
+        if self.inpt.force_moment > 0: img = self.img_positive_moment
         else: img = self.img_negative_moment
         self.g.create_image(self.cw-self.ipadd/2, self.ch/2, image=img)
         self.g.create_text(self.cw-self.ipadd/2, self.ch/2, text=self.inpt.force_moment_label)
     
 
-    def redraw(self, bolt, force, centroid, res_vect, force_moment):
+    def redraw(self, bolt, force, centroid, res_vect):
         # clear the canvas before drawing the new scheme     
         self.g.delete('all')
         self.ipadd = 95
@@ -196,8 +196,9 @@ class Scheme():
         self.draw_force(posf, load_vect, force)
         self.draw_centroid(centroid)
         
-        if res_vect: self.draw_result_force(posb, res_vect)
-        if force_moment: self.draw_force_moment(force_moment)
+        if res_vect: 
+            self.draw_result_force(posb, res_vect)
+            self.draw_force_moment()
 
         self.g.update()
         

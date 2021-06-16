@@ -39,6 +39,7 @@ class Auxilliary:
         return finMoment
 
     def invert_vector(self, vect):
+        print(vect)
         for i in range(len(vect)):
             vect[i][0] *= -1 
             vect[i][1] *= -1
@@ -103,7 +104,7 @@ class Calculate:
                 finVec[1] += M*(Ai*Gi*d / sA)
                 # this here needs to be done
             out.append(finVec)
-        return out, M
+        return out
            
 
     def sum_resulting_vectors(self):
@@ -114,9 +115,7 @@ class Calculate:
         vect = self.aux.convert_to_vector(self.force)
 
         shear_load = self.aux.invert_vector(self.shear_load(vect))
+        moment_load = self.aux.invert_vector(self.shear_load_moment(centroid, vect, force_moment))
+        sum_load = self.aux.zip_vectors(shear_load, moment_load)
         
-        shear_load_moment, force_moment = self.shear_load_moment(centroid, vect, force_moment)
-        shear_load_moment = self.aux.invert_vector(shear_load_moment)
-
-        # return self.aux.zip_vectors(self.res_vect['load_vector'],  self.res_vect['load-moment_vector'])
-        return shear_load, force_moment
+        return sum_load, shear_load, moment_load

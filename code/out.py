@@ -5,9 +5,17 @@ import numpy
 from PIL import Image
 from io import BytesIO
 
-# import plotly.io as pio
-# from PIL import Image
-# import io
+def format_data(sum_load, shear_load, moment_load):
+    print(sum_load)
+
+# class Report:
+#     def __init__(self):
+#         pass
+
+# class TxtTable:
+#     def __init__(self):
+#         pass
+
 
 df = pandas.DataFrame([['1', '2', '3', '4'],
                         [9.525, 9.525, 9.525, 9.525],

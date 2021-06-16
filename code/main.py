@@ -1,6 +1,5 @@
 # libraries
 import tkinter.filedialog
-import pyautogui
 import tkinter
 import math
 import os
@@ -8,6 +7,7 @@ import os
 # including local files
 import input_interface
 import scheme
+import out
 import calc
 
 # get a path to this file
@@ -72,7 +72,7 @@ def redraw_scheme():
     # a tkinter button cannot have more than one fuctions bounded to it 
     # try:
     centroid = calculate_centroid(inpt.bolt_info)
-    sktch.redraw(inpt.bolt_info, inpt.force_info, centroid, None, None)
+    sktch.redraw(inpt.bolt_info, inpt.force_info, centroid, None)
     # except:
     #     # if the user inputs wrong data manually
     #     err_lab.config(text='there are none or invalid geometry and/or force data')
@@ -82,9 +82,9 @@ def run_calculations():
     # a tkinter button cannot have more than one fuctions bounded to it 
     # try:
     centroid = calculate_centroid(inpt.bolt_info)
-    vect, force_moment = calc.calc_driver(centroid, inpt.force_moment)
-    print(inpt.bolt_info)
-    sktch.redraw(inpt.bolt_info, inpt.force_info, centroid, vect, force_moment)
+    sum_load, shear_load, moment_load = calc.calc_driver(centroid, inpt.force_moment)
+    out.format_data(sum_load, shear_load, moment_load)
+    sktch.redraw(inpt.bolt_info, inpt.force_info, centroid, sum_load)
     # except:
     #     # if the user inputs wrong data manually
     #     err_lab.config(text='there are none or invalid geometry and/or force data')
