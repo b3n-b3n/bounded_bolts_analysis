@@ -38,4 +38,3 @@
 
 do some checkups
 generate text or csv output
-je tu nejaký bug pri výpoctoch
