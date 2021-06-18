@@ -15,7 +15,6 @@ dname = r'{}'.format(os.path.realpath(__file__).replace('code/main.py', ''))
 # change the working directory if it is somewhere else
 os.chdir(dname)
 
-
 root = tkinter.Tk()
 root.title('eccentric joints')
 
@@ -34,23 +33,6 @@ g.grid(row=1, column=1, rowspan=2, sticky='s')
 err_lab = tkinter.Label(root, text='',
                         font=font[1], fg='red', bg=bg)
 err_lab.grid(row=0, column=1, pady=(10, 0))
-
-# sample bolt
-sp_bolt = {'name': [''],
-           'diameter[mm]': [''],
-           'x-pos[mm]': [''],
-           'y-pos[mm]': [''],
-           'E[MPa]': [''],
-           'Rm[MPa]': [''],
-           't1[mm]': [''],
-           't2[mm]': ['']}
-
-# sample force
-sp_force = {'name': [''],
-            'force[N]': [''],
-            'x-pos[mm]': [''],
-            'y-pos[mm]': [''],
-            'angle[deg]': ['']}
 
 
 def calculate_centroid(bolts):
@@ -72,7 +54,7 @@ def redraw_scheme():
     # a tkinter button cannot have more than one fuctions bounded to it 
     # try:
     centroid = calculate_centroid(inpt.bolt_info)
-    sktch.redraw(inpt.bolt_info, inpt.force_info, centroid, None)
+    sktch.redraw(inpt.bolt_info, inpt.force_info, centroid)
     # except:
     #     # if the user inputs wrong data manually
     #     err_lab.config(text='there are none or invalid geometry and/or force data')
@@ -82,20 +64,22 @@ def run_calculations():
     # a tkinter button cannot have more than one fuctions bounded to it 
     # try:
     centroid = calculate_centroid(inpt.bolt_info)
-    sum_load, shear_load, moment_load = calc.calc_driver(centroid, inpt.force_moment)
-    out.format_data(sum_load, shear_load, moment_load)
-    sktch.redraw(inpt.bolt_info, inpt.force_info, centroid, sum_load)
+    calc.calc_driver(centroid, inpt.force_moment)
+    sktch.redraw(inpt.bolt_info, inpt.force_info, centroid, calc.sum_load)
     # except:
     #     # if the user inputs wrong data manually
     #     err_lab.config(text='there are none or invalid geometry and/or force data')
 
+def generate_a_report():
+    centroid = calculate_centroid(inpt.bolt_info)
+    rprt.gen_image_report(centroid)
 
 def create_buttons(sktch, inpt):
     button_id = ['draw', 'calculate', 
                 'generate report', 'multiple reports',
                 'fill in geometry', 'fill in load']
     functions = [redraw_scheme, run_calculations,
-                sktch.idk, sktch.idk,
+                generate_a_report, sktch.idk,
                 lambda: inpt.update_data('bolt'), lambda: inpt.update_data('force')]
 
     for index, id in enumerate(button_id):
@@ -103,10 +87,30 @@ def create_buttons(sktch, inpt):
                        font=font[1], bg=bg, relief=relief).grid(row=index//2,
                                                                 column=index % 2, sticky='e'+'w', padx=2, pady=2)
 
+# INPUT FORMAT ------------------------------------------
+# sample bolt
+sp_bolt = {'name': [''],
+           'diameter[mm]': [''],
+           'x-pos[mm]': [''],
+           'y-pos[mm]': [''],
+           'E[MPa]': [''],
+           'Rm[MPa]': [''],
+           't1[mm]': [''],
+           't2[mm]': ['']}
 
+# sample force
+sp_force = {'name': [''],
+            'force[N]': [''],
+            'x-pos[mm]': [''],
+            'y-pos[mm]': [''],
+            'angle[deg]': ['']}
+
+# CLASS INITIALIZAION --------------------------------------
 inpt = input_interface.UI(root, bg, font, sp_bolt, sp_force, dname, err_lab)
 sktch = scheme.Scheme(g, inpt, cw, ch, err_lab, font, dname, inpt)
 calc = calc.Calculate(err_lab, inpt)
+rprt = out.Report(calc, inpt)
+
 create_buttons(sktch, inpt)
 
 

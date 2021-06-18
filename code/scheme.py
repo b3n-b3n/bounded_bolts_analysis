@@ -80,8 +80,7 @@ class Scheme():
         self.allowed_diameter = 60  # maximum allowed diameter of a bolt
         self.axis_size = 50  # indicating axis
         self.axis_dist = 20  # disance from the edge
-        self.labdist_bolt = 1  # distance of label form the bolt
-        self.labdist_force = 10 # distance of label form the force point
+        self.labdist = 10  # distance of label
 
         self.geo = Geometry()
         self.inpt = inpt # this is instante to the inputer interface UI class
@@ -118,7 +117,7 @@ class Scheme():
         y = self.ch - self.ipadd - centroid[1]*(self.ch-2*self.ipadd)
         self.g.create_oval(x-d, y-d, x+d, y+d, fill='blue')
         # label
-        self.g.create_text(x+d+self.labdist_force, y-d-self.labdist_force, text='C.G.', font=self.font[1])
+        self.g.create_text(x+d+self.labdist, y-d-self.labdist, text='C.G.', font=self.font[1])
 
 
     def draw_bolts(self, pos, d, bolt):
@@ -132,7 +131,7 @@ class Scheme():
             self.g.create_line(x, y-r*axis_ratio, x, y+r*axis_ratio, dash=(4,2))
             self.g.create_line(x-r*axis_ratio, y, x+r*axis_ratio, y, dash=(4,2))
             # label
-            self.g.create_text(x+r+self.labdist_bolt, y-r-self.labdist_bolt, text=bolt['name'][i], font=self.font[1])
+            self.g.create_text(x+self.labdist, y-r-self.labdist, text=bolt['name'][i], font=self.font[1])
 
 
     def draw_force(self, pos, size, force):
@@ -146,7 +145,7 @@ class Scheme():
             y2 =  size[i][1]
             self.g.create_line(x, y, x+x2, y-y2, arrow=tkinter.LAST, fill='red', width=2)
             # label
-            self.g.create_text(x+self.labdist_force+self.fc_d, y-self.fc_d-self.labdist_force, text=force['name'][i], font=self.font[1])
+            self.g.create_text(x+self.labdist+self.fc_d, y-self.fc_d-self.labdist, text=force['name'][i], font=self.font[1])
 
 
     def draw_result_force(self, pos, size):
@@ -165,7 +164,7 @@ class Scheme():
         self.g.create_text(self.cw-self.ipadd/2, self.ch/2, text=self.inpt.force_moment_label)
     
 
-    def redraw(self, bolt, force, centroid, res_vect):
+    def redraw(self, bolt, force, centroid, res_vect=None):
         # clear the canvas before drawing the new scheme     
         self.g.delete('all')
         self.ipadd = 95

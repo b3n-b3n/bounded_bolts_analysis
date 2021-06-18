@@ -39,7 +39,6 @@ class Auxilliary:
         return finMoment
 
     def invert_vector(self, vect):
-        print(vect)
         for i in range(len(vect)):
             vect[i][0] *= -1 
             vect[i][1] *= -1
@@ -55,9 +54,13 @@ class Calculate:
         self.force = inpt.force_info
 
         self.aux = Auxilliary()
+        
+        # outputs of the data
+        self.shear_load = []
+        self.moment_load = []
+        self.sum_load = []
 
-
-    def shear_load(self, vect):
+    def shear_load_func(self, vect):
         # calulate sum of all fastener ares
         sA = 0
         out = []
@@ -79,7 +82,7 @@ class Calculate:
         return out
 
 
-    def shear_load_moment(self, c, vect, moment_of_force):
+    def moment_load_func(self, c, vect, moment_of_force):
         sA = 0
         out = []
         for i in range(len(self.bolt['name'])):
@@ -113,9 +116,8 @@ class Calculate:
     def calc_driver(self, centroid, force_moment):
         self.err_lab.config(text='')
         vect = self.aux.convert_to_vector(self.force)
+        calc_out = {}
 
-        shear_load = self.aux.invert_vector(self.shear_load(vect))
-        moment_load = self.aux.invert_vector(self.shear_load_moment(centroid, vect, force_moment))
-        sum_load = self.aux.zip_vectors(shear_load, moment_load)
-        
-        return sum_load, shear_load, moment_load
+        self.shear_load = self.aux.invert_vector(self.shear_load_func(vect))
+        self.moment_load = self.aux.invert_vector(self.moment_load_func(centroid, vect, force_moment))
+        self.sum_load = self.aux.zip_vectors(self.shear_load, self.moment_load)

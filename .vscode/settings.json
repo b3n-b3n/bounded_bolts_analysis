@@ -1,5 +1,6 @@
 {
     "python.analysis.extraPaths": [
         "/home/ben/Documents/code/aeromobil/eccentric_joints/code/"
-    ]
+    ],
+    "python.pythonPath": "/usr/bin/python3"
 }
