@@ -232,7 +232,7 @@ class UI:
 
     # MATERIAL INFORMATION -------------------------------------------
     def object1_ui(self):
-        entry_id = ['thickness', 'name']
+        entry_id = ['name', 'Fbry[MPa]']
         object1_entry = {}
 
         for index, id in enumerate(entry_id):
@@ -243,7 +243,7 @@ class UI:
             object1_entry[id].grid(row=index, column=1, sticky='e')
 
     def object2_ui(self):
-        entry_id = ['thickness', 'name']
+        entry_id = ['name', 'Fbry[MPa]']
         object2_entry = {}
 
         for index, id in enumerate(entry_id):
