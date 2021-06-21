@@ -29,13 +29,13 @@ class UI:
             self.inputs, text='input_tables', relief='groove', bg=self.bg)
         self.table.grid(row=0, column=0, sticky='e'+'w')
 
-        self.object1 = tkinter.LabelFrame(
+        self.obj1 = tkinter.LabelFrame(
             self.inputs, text='connection material 1', relief='groove', bg=self.bg)
-        self.object1.grid(row=1, column=0, sticky='n'+'e'+'w'+'s')
+        self.obj1.grid(row=1, column=0, sticky='n'+'e'+'w'+'s')
 
-        self.object2 = tkinter.LabelFrame(
+        self.obj2 = tkinter.LabelFrame(
             self.inputs, text='connection material 2', relief='groove', bg=self.bg)
-        self.object2.grid(row=2, column=0, sticky='n'+'e'+'w'+'s')
+        self.obj2.grid(row=2, column=0, sticky='n'+'e'+'w'+'s')
 
         self.buttons = tkinter.LabelFrame(
             text='buttons', relief='solid', bg=self.bg)
@@ -46,6 +46,9 @@ class UI:
 
         tkinter.Button(self.table, text='edit load data', command=lambda: self.input_table('force'),
                        font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
+
+        self.object1 = {}
+        self.object2 = {}
 
         self.object1_ui()
         self.object2_ui()
@@ -233,25 +236,19 @@ class UI:
     # MATERIAL INFORMATION -------------------------------------------
     def object1_ui(self):
         entry_id = ['name', 'Fbry[MPa]']
-        object1_entry = {}
-
         for index, id in enumerate(entry_id):
-            tkinter.Label(self.object1, text=id, font=self.font[1],
+            tkinter.Label(self.obj1, text=id, font=self.font[1],
                           bg=self.bg).grid(row=index, column=0, padx=55)
-            object1_entry[id] = tkinter.Entry(
-                self.object1, justify='center', font=self.font[1], relief=self.relief, width=20)
-            object1_entry[id].grid(row=index, column=1, sticky='e')
+            self.object1[id] = tkinter.Entry(self.obj1, justify='center', font=self.font[1], relief=self.relief, width=20)
+            self.object1[id].grid(row=index, column=1, sticky='e')
 
     def object2_ui(self):
         entry_id = ['name', 'Fbry[MPa]']
-        object2_entry = {}
-
         for index, id in enumerate(entry_id):
-            tkinter.Label(self.object2, text=id, font=self.font[1],
+            tkinter.Label(self.obj2, text=id, font=self.font[1],
                           bg=self.bg).grid(row=index, column=0, padx=55)
-            object2_entry[id] = tkinter.Entry(
-                self.object2, justify='center', font=self.font[1], relief=self.relief, width=20)
-            object2_entry[id].grid(row=index, column=1, sticky='e')
+            self.object2[id] = tkinter.Entry(self.obj2, justify='center', font=self.font[1], relief=self.relief, width=20)
+            self.object2[id].grid(row=index, column=1, sticky='e')
 
 
     # UPDATING DATA ---------------------------------------------------
