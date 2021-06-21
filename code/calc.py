@@ -151,6 +151,14 @@ class OutCalc:
             out.append(round(vect[i] / (d[i]*t[i]), self.round_to))
         return out
 
+    def calculate_rfi(self, sigma, Fbry):
+        if sigma[0] == '-': return ['-' for i in range(self.bolts_num)]
+        out = []
+        print(Fbry)
+        for sig in sigma:
+            out.append(round(Fbry/sig, self.round_to))
+        return out
+
 
     def calculate_rf(self, tau):
         if tau[0] == '-': return ['-' for i in range(self.bolts_num)]
@@ -177,8 +185,8 @@ class OutCalc:
         tab_data['RF-0'] = self.calculate_rf(tab_data['Tau[MPa]'])
         tab_data['Sigma_1[MPa]'] = self.calculate_sigma(tab_data['F[N]'], self.inpt.bolt_info['t1[mm]'])
         tab_data['Sigma_2[MPa]'] = self.calculate_sigma(tab_data['F[N]'], self.inpt.bolt_info['t2[mm]'])
-        tab_data['RF-1'] = ['-' for i in range(self.bolts_num)]
-        tab_data['RF-2'] = ['-' for i in range(self.bolts_num)]
+        tab_data['RF-1'] = self.calculate_rfi(tab_data['Sigma_1[MPa]'], float(self.inpt.object1['Fbry[MPa]'].get()))
+        tab_data['RF-2'] = self.calculate_rfi(tab_data['Sigma_2[MPa]'], float(self.inpt.object2['Fbry[MPa]'].get()))
 
         df = pandas.DataFrame(data=tab_data)
         print(df)
