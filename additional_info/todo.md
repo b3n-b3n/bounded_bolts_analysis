@@ -37,4 +37,5 @@
 
 
 do some checkups
-generate text or csv output
+generate csv output
+take in csv file as an input

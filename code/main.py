@@ -70,16 +70,13 @@ def run_calculations():
     #     # if the user inputs wrong data manually
     #     err_lab.config(text='there are none or invalid geometry and/or force data')
 
-def generate_a_report():
-    centroid = calculate_centroid(inpt.bolt_info)
-    rprt.gen_image_report(centroid)
 
 def create_buttons(sktch, inpt):
     button_id = ['draw', 'calculate', 
                 'generate report', 'multiple reports',
                 'fill in geometry', 'fill in load']
     functions = [redraw_scheme, run_calculations,
-                generate_a_report, sktch.idk,
+                rprt.gen_image_report, sktch.idk,
                 lambda: inpt.update_data('bolt'), lambda: inpt.update_data('force')]
 
     for index, id in enumerate(button_id):

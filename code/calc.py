@@ -1,4 +1,5 @@
 # importing libraries
+import pandas
 import numpy
 import math
 
@@ -121,3 +122,64 @@ class Calculate:
         self.shear_load = self.aux.invert_vector(self.shear_load_func(vect))
         self.moment_load = self.aux.invert_vector(self.moment_load_func(centroid, vect, force_moment))
         self.sum_load = self.aux.zip_vectors(self.shear_load, self.moment_load)
+
+
+class OutCalc:
+    def __init__(self, calc, inpt):
+        self.inpt = inpt
+        self.calc = calc
+        self.bolts_num = len(self.inpt.bolt_info['name'])
+        self.round_to = 3
+
+
+    def calculate_tau(self, vect):
+        out = []
+        if vect[0] == '-': return ['-' for i in range(self.bolts_num)]
+        
+        d = self.inpt.bolt_info['diameter[mm]']
+        for i in range(len(vect)):
+            area = math.pi*d[i] / 4
+            out.append(round(float(vect[i])*area, self.round_to))
+        return out
+
+
+    def calculate_sigma(self, vect, t):
+        if vect[0] == '-': return ['-' for i in range(self.bolts_num)]
+        out = []
+        d = self.inpt.bolt_info['diameter[mm]']
+        for i in range(len(vect)):
+            out.append(round(vect[i] / (d[i]*t[i]), self.round_to))
+        return out
+
+
+    def calculate_rf(self, tau):
+        if tau[0] == '-': return ['-' for i in range(self.bolts_num)]
+        out = []
+        rm = self.inpt.bolt_info['Rm[MPa]']
+        for i in range(self.bolts_num): 
+            out.append(round(rm[i]/2/tau[i], self.round_to))
+        return out
+
+    def vect_to_size(self, vect):
+        # takes vector and calculates its size
+        if not vect: return ['-' for i in range(self.bolts_num)]
+        return [round(math.sqrt(vect[i][0]**2 + vect[i][1]**2), self.round_to) for i in range(len(vect))] 
+
+
+    def create_dataframe(self):
+        tab_data = {}  # table data
+        tab_data['name'] = self.inpt.bolt_info['name']
+        tab_data['d[mm]'] = self.inpt.bolt_info['diameter[mm]']
+        tab_data['Fs[N]'] = self.vect_to_size(self.calc.shear_load)
+        tab_data['Fm[N]'] = self.vect_to_size(self.calc.moment_load)
+        tab_data['F[N]'] = self.vect_to_size(self.calc.sum_load)
+        tab_data['Tau[MPa]'] = self.calculate_tau(tab_data['F[N]'])
+        tab_data['RF-0'] = self.calculate_rf(tab_data['Tau[MPa]'])
+        tab_data['Sigma_1[MPa]'] = self.calculate_sigma(tab_data['F[N]'], self.inpt.bolt_info['t1[mm]'])
+        tab_data['Sigma_2[MPa]'] = self.calculate_sigma(tab_data['F[N]'], self.inpt.bolt_info['t2[mm]'])
+        tab_data['RF-1'] = ['-' for i in range(self.bolts_num)]
+        tab_data['RF-2'] = ['-' for i in range(self.bolts_num)]
+
+        df = pandas.DataFrame(data=tab_data)
+        print(df)
+        return df
