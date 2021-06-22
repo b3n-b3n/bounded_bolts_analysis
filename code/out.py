@@ -24,17 +24,21 @@ class Report:
         pass
 
     def generate_figure(self, dataframe):
+        # make the column names appear in bold font type
+        column_names = ['<b>'+name+'</b>' for name in list(dataframe.columns)]
         layout = plotly.graph_objs.Layout(margin={'l': 0, 'r': 0, 't': 0, 'b': 0})
+        
         fig = plotly.graph_objs.Figure(layout=layout, data=[plotly.graph_objs.Table(
             header=dict(
-                values=list(dataframe.columns), 
-                fill_color='paleturquoise', 
-                align='left', 
+                values=column_names, 
+                font_family="Courier New Bold",
+                fill_color='white', 
+                align='center', 
                 line_color='darkslategray'),
             cells=dict(
                 values=list(dataframe[col] for col in list(dataframe.columns)), 
-                fill_color='lavender',
-                align='left', 
+                fill_color='white',
+                align='center', 
                 line_color='darkslategray'))])
         return fig
 
@@ -68,7 +72,7 @@ class Report:
         snd = numpy.asarray(snd)
 
         print(img.shape, snd.shape)
-        imgs_comb = numpy.concatenate([snd, img])
+        imgs_comb = numpy.concatenate([img, snd])
         imgs_comb = Image.fromarray(imgs_comb)
         imgs_comb.show()
 

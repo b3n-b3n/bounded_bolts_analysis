@@ -27,7 +27,7 @@ relief = 'groove'
 font = [('ms sans', '13'), ('ms sans', '11'), ('ms sans', '9')]
 
 
-g = tkinter.Canvas(root, width=cw, height=ch, bg='grey80', highlightthickness=0)
+g = tkinter.Canvas(root, width=cw, height=ch, bg='grey99', highlightthickness=0)
 g.grid(row=1, column=1, rowspan=2, sticky='s')
 
 err_lab = tkinter.Label(root, text='',
