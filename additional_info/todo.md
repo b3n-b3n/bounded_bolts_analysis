@@ -16,7 +16,6 @@
         put moment of force here {cm:2021-06-03}
     loading variables {cm:2021-06-05}
     error message for loading incorrect variables {cm:2021-06-07}
-    adjust the main interface so it looks somewhat nice
     separate the table into a different class
         get on with a numerous errors this will cause
 (B) SCHEME  {c}
@@ -39,3 +38,4 @@
 do some checkups
 generate csv output
 take in csv file as an input
+adjust the main interface so it looks somewhat nice

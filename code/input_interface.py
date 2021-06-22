@@ -241,6 +241,7 @@ class UI:
                           bg=self.bg).grid(row=index, column=0, padx=55)
             self.object1[id] = tkinter.Entry(self.obj1, justify='center', font=self.font[1], relief=self.relief, width=20)
             self.object1[id].grid(row=index, column=1, sticky='e')
+            self.object1[id].insert(0, 1)
 
     def object2_ui(self):
         entry_id = ['name', 'Fbry[MPa]']
@@ -249,6 +250,7 @@ class UI:
                           bg=self.bg).grid(row=index, column=0, padx=55)
             self.object2[id] = tkinter.Entry(self.obj2, justify='center', font=self.font[1], relief=self.relief, width=20)
             self.object2[id].grid(row=index, column=1, sticky='e')
+            self.object2[id].insert(0, 1)
 
 
     # UPDATING DATA ---------------------------------------------------
