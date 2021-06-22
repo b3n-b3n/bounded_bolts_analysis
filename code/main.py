@@ -21,18 +21,19 @@ root.title('eccentric joints')
 # general appearance options
 bg = 'grey99'
 root['bg'] = bg
-ch = 420  # canvas height
-cw = 420  # canvas width
+ch = 400  # canvas height
+cw = 400  # canvas width
 relief = 'groove'
-font = [('ms sans', '13'), ('ms sans', '11'), ('ms sans', '9')]
+font = [('ms sans', '13'), ('ms sans', '11'), ('ms sans', '9'), ('ms sans', '7')]
+
+err_lab = tkinter.Label(root, text='', font=font[1], fg='red', bg=bg)
+err_lab.grid(row=0, column=1, pady=(10, 0))
 
 
-g = tkinter.Canvas(root, width=cw, height=ch, bg='grey99', highlightthickness=0)
+g = tkinter.Canvas(root, width=cw, height=ch, bg='grey90', highlightthickness=0)
 g.grid(row=1, column=1, rowspan=2, sticky='s')
 
-err_lab = tkinter.Label(root, text='',
-                        font=font[1], fg='red', bg=bg)
-err_lab.grid(row=0, column=1, pady=(10, 0))
+tkinter.Entry(root, font=font[3], justify='center', width=40).grid(row=1, column=1, pady=(0, 150))
 
 
 def calculate_centroid(bolts):

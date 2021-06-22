@@ -1,8 +1,8 @@
 import pyautogui
 import plotly
-import pandas
 import numpy
 import math
+import time
 
 import calc
 
@@ -54,6 +54,10 @@ class Report:
 
 
     def gen_image_report(self):
+        # set focus away from the entry box so that it is not highlighted
+        self.root.focus_set()
+        self.root.update()
+
         df = calc.OutCalc(self.calc, self.inpt).create_dataframe()
 
         fig = self.generate_figure(df)

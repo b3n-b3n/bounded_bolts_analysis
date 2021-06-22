@@ -22,10 +22,9 @@ class Geometry:
         # else:
         pos_bolt = (pos_bolt-mi) / (ma-mi)
         pos_force = (pos_force-mi) / (ma-mi)
-        diameter = (diameter-mi) / (ma-mi)
         centroid = (centroid-mi) / (ma-mi)
         
-        return pos_bolt, pos_force, centroid, diameter
+        return pos_bolt, pos_force, centroid
     
 
     def normalize_vector_size(self, max_vect, vect, ipadd):
@@ -75,9 +74,9 @@ class Scheme():
         self.err_lab = err_lab
         self.path = dname
 
-        self.ipadd = 95  # inside canvas padding
+        self.ipadd = 120  # inside canvas padding
         self.fc_d = 3  # force point diameter
-        self.allowed_diameter = 60  # maximum allowed diameter of a bolt
+        self.diameter = 10  # maximum allowed diameter of a bolt
         self.axis_size = 50  # indicating axis
         self.axis_dist = 20  # disance from the edge
         self.labdist = 10  # distance of label
@@ -112,24 +111,25 @@ class Scheme():
 
 
     def draw_centroid(self, centroid):
-        d = 5  # diamter of a centroid
+        d = 4  # diamter of a centroid
         x = self.ipadd + centroid[0]*(self.cw-2*self.ipadd)
         y = self.ch - self.ipadd - centroid[1]*(self.ch-2*self.ipadd)
-        self.g.create_oval(x-d, y-d, x+d, y+d, fill='blue')
+        self.g.create_line(x-d, y, x+d, y, fill='blue')
+        self.g.create_line(x, y-d, x, y+d, fill='blue')
         # label
-        self.g.create_text(x+d+self.labdist, y-d-self.labdist, text='C.G.', font=self.font[1])
+        self.g.create_text(x+d+self.labdist, y-d-self.labdist, text='C.G.', font=self.font[1], fill='blue')
 
 
-    def draw_bolts(self, pos, d, bolt):
-        axis_ratio = 1.3  # how far does the bolt axis extend
+    def draw_bolts(self, pos, bolt):
+        axis_ratio = 2  # how far does the bolt axis extend
         for i in range(len(pos[0])):
             x = self.ipadd + pos[0][i]*(self.cw-2*self.ipadd)
             y = self.ch - self.ipadd - pos[1][i]*(self.ch-2*self.ipadd)
-            r = d[i]/2*(self.cw-2*self.ipadd)
-            self.g.create_oval(x-r, y-r, x+r, y+r, width=2)
+            r = self.diameter/2
+            self.g.create_oval(x-r, y-r, x+r, y+r)
             # axes
-            self.g.create_line(x, y-r*axis_ratio, x, y+r*axis_ratio, dash=(4,2))
-            self.g.create_line(x-r*axis_ratio, y, x+r*axis_ratio, y, dash=(4,2))
+            self.g.create_line(x, y-r*axis_ratio, x, y+r*axis_ratio, dash=(2,1))
+            self.g.create_line(x-r*axis_ratio, y, x+r*axis_ratio, y, dash=(2,1))
             # label
             self.g.create_text(x+self.labdist, y-r-self.labdist, text=bolt['name'][i], font=self.font[1])
 
@@ -145,7 +145,7 @@ class Scheme():
             y2 =  size[i][1]
             self.g.create_line(x, y, x+x2, y-y2, arrow=tkinter.LAST, fill='red', width=2)
             # label
-            self.g.create_text(x+self.labdist+self.fc_d, y-self.fc_d-self.labdist, text=force['name'][i], font=self.font[1])
+            self.g.create_text(x+self.labdist+self.fc_d, y-self.fc_d-self.labdist, text=force['name'][i], font=self.font[1], fill='red')
 
 
     def draw_result_force(self, pos, size):
@@ -161,24 +161,17 @@ class Scheme():
         if self.inpt.force_moment > 0: img = self.img_positive_moment
         else: img = self.img_negative_moment
         self.g.create_image(self.cw-self.ipadd/2, self.ch/2, image=img)
-        self.g.create_text(self.cw-self.ipadd/2, self.ch/2, text=self.inpt.force_moment_label)
+        self.g.create_text(self.cw-self.ipadd/2, self.ch/2, text=self.inpt.force_moment_label, fill='red')
     
 
     def redraw(self, bolt, force, centroid, res_vect=None):
         # clear the canvas before drawing the new scheme     
         self.g.delete('all')
-        self.ipadd = 95
-        
 
         # ADJUST THE DATA  ----------------------------------------------------------
         # normalize input to interval [0, 1]
-        posb, posf, centroid, diameters = self.geo.normalize_coordiantes(bolt, force, centroid)
+        posb, posf, centroid = self.geo.normalize_coordiantes(bolt, force, centroid)
         
-        maxr = max(diameters)/2*(self.cw-2*self.ipadd)
-        # print(maxr)
-        if maxr > self.ipadd:
-            self.ipadd = maxr
-
         load_vect = self.geo.convert_to_vector(force['force[N]'], force['angle[deg]'])
         max_vect = self.geo.max_vector(load_vect, res_vect)
 
@@ -191,7 +184,7 @@ class Scheme():
         self.g.create_rectangle(0+self.ipadd, 0+self.ipadd, self.cw-self.ipadd, self.ch-self.ipadd, fill='white', outline='white')
         
         self.indicate_axis()
-        self.draw_bolts(posb, diameters, bolt)
+        self.draw_bolts(posb, bolt)
         self.draw_force(posf, load_vect, force)
         self.draw_centroid(centroid)
         

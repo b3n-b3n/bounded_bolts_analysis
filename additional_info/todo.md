@@ -39,3 +39,4 @@ do some checkups
 generate csv output
 take in csv file as an input
 adjust the main interface so it looks somewhat nice
+poupratoval som triedu OutCalc nech to je čiteteľné
