@@ -22,7 +22,7 @@ root.title('eccentric joints')
 bg = 'grey99'
 root['bg'] = bg
 ch = 420  # canvas height
-cw = 450  # canvas width
+cw = 420  # canvas width
 relief = 'groove'
 font = [('ms sans', '13'), ('ms sans', '11'), ('ms sans', '9')]
 
@@ -106,7 +106,7 @@ sp_force = {'name': [''],
 inpt = input_interface.UI(root, bg, font, sp_bolt, sp_force, dname, err_lab)
 sktch = scheme.Scheme(g, inpt, cw, ch, err_lab, font, dname, inpt)
 calc = calc.Calculate(err_lab, inpt)
-rprt = out.Report(calc, inpt)
+rprt = out.Report(calc, inpt, root, [cw, ch])
 
 create_buttons(sktch, inpt)
 

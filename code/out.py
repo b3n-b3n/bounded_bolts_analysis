@@ -1,3 +1,4 @@
+import pyautogui
 import plotly
 import pandas
 import numpy
@@ -12,9 +13,12 @@ class Report:
     """ 
     class responsible for creating image and cvs reports of the calculations
     """
-    def __init__(self, calc, inpt) -> None:
+    def __init__(self, calc, inpt, root, scheme_dimension) -> None:
         self.calc = calc
         self.inpt = inpt
+        # root window to take screenshot of
+        self.root = root
+        self.scheme_dimension = scheme_dimension
 
     def gen_cvs_table(self):
         pass
@@ -32,12 +36,24 @@ class Report:
                 fill_color='lavender',
                 align='left', 
                 line_color='darkslategray'))])
+        return fig
+
+
+    def take_screenshot(self):
+        # take screenshot of the schceme from root window
+        width = self.scheme_dimension[0]
+        height = self.scheme_dimension[1]
+        xpos = self.root.winfo_x()+self.root.winfo_width()-width
+        ypos = self.root.winfo_y()+self.root.winfo_height()-height
+
+        return pyautogui.screenshot(region=(xpos, ypos, width, height))
+
 
     def gen_image_report(self):
         df = calc.OutCalc(self.calc, self.inpt).create_dataframe()
 
         fig = self.generate_figure(df)
-        img = fig.to_image(format="png", width = 1000, height = 800)
+        img = fig.to_image(format="jpg", width = 1000, height = 800)
         img = numpy.asarray(Image.open(BytesIO(img)))
 
         count = 1
@@ -45,19 +61,14 @@ class Report:
         img = img[:count]
         shape = len(img[0])
         
-        # img = Image.open(img)
-        snd = Image.open('images/screen.png')
+        snd = self.take_screenshot()
         width, height = snd.size
         amount = 1000-height
-        snd = snd.resize((1000, width+amount))
+        snd = snd.resize((1000, width+amount))        
         snd = numpy.asarray(snd)
 
         print(img.shape, snd.shape)
-
-        # pick the image which is the smallest, and resize the others to match it (can be arbitrary image shape here)
-        # min_shape = sorted([(numpy.sum(i.size), i.size ) for i in imgs])[0][1]
         imgs_comb = numpy.concatenate([snd, img])
-        # imgs_comb = numpy.vstack((numpy.asarray( i.resize(shape))) for i in imgs)
         imgs_comb = Image.fromarray(imgs_comb)
         imgs_comb.show()
 
