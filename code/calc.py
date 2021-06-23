@@ -27,10 +27,10 @@ class Auxilliary:
         return math.sqrt(dx**2 + dy**2)
 
     def zip_vectors(self, v1, v2):
+        out = []
         for i in range(len(v1)):
-            v1[i][0] += v2[i][0]
-            v1[i][1] += v2[i][1]
-        return v1
+            out.append([v1[i][0]+v2[i][0], v1[i][1]+v2[i][1]])
+        return out
 
     def force_moment(self, c, force, vect):
         finMoment = 0
@@ -126,6 +126,9 @@ class Calculate:
         self.moment_load = self.aux.invert_vector(
             self.moment_load_func(centroid, vect, force_moment))
         self.sum_load = self.aux.zip_vectors(self.shear_load, self.moment_load)
+
+        print(self.shear_load, 'shear')
+        print(self.sum_load, 'sum')
 
 
 class OutCalc:
