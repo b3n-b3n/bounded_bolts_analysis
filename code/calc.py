@@ -201,5 +201,6 @@ class OutCalc:
         tab_data['RF-2 [MPa]'] = self.calculate_rfi(
             tab_data['σ2 [MPa]'], float(self.inpt.object2['Fbry[MPa]'].get()))
 
+        print(tab_data)
         df = pandas.DataFrame(data=tab_data)
         return df

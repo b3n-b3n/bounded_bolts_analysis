@@ -30,7 +30,7 @@
         add name to each bolt in scheme {cm:2021-06-05}
         name the centroid {cm:2021-06-05}
         add name to each force in the scheme {cm:2021-06-05}
-    use exclusively input moment of force in the image
+    use exclusively input moment of force in the image {cm:2021-06-23}
 (C) GENERATING A REPORT
 (D) DOCUMENTATION
 
@@ -39,4 +39,4 @@ do some checkups
 generate csv output
 take in csv file as an input
 adjust the main interface so it looks somewhat nice
-poupratoval som triedu OutCalc nech to je čiteteľné
+poupratoval som triedu OutCalc nech to je čiteteľné {cm:2021-06-23}
