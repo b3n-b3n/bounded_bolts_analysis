@@ -33,7 +33,7 @@ err_lab.grid(row=0, column=1, pady=(10, 0))
 g = tkinter.Canvas(root,
                    width=cw,
                    height=ch,
-                   bg='grey90',
+                   bg='grey99',
                    highlightthickness=0)
 g.grid(row=1, column=1, rowspan=2, sticky='s')
 
@@ -109,7 +109,7 @@ sp_bolt = {
     'x-pos[mm]': [''],
     'y-pos[mm]': [''],
     'E[MPa]': [''],
-    'Rm[MPa]': [''],
+    'Rms[MPa]': [''],
     't1[mm]': [''],
     't2[mm]': ['']
 }

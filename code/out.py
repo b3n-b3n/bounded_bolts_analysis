@@ -3,11 +3,15 @@ import plotly
 import numpy
 import math
 import time
+from bokeh.io import export_png, export_svgs
+from bokeh.models import ColumnDataSource, DataTable, TableColumn
 
 import calc
+import table_improved
 
 from PIL import Image
 from io import BytesIO
+
 
 class Report:
     """ 
@@ -60,25 +64,27 @@ class Report:
 
         df = calc.OutCalc(self.calc, self.inpt).create_dataframe()
 
-        fig = self.generate_figure(df)
-        img = fig.to_image(format="jpg", width = 1000, height = 800)
-        img = numpy.asarray(Image.open(BytesIO(img)))
-
-        count = 1
-        while (False in (img[count][1] == 255)): count += 1
-        img = img[:count]
-        shape = len(img[0])
         
-        snd = self.take_screenshot()
-        width, height = snd.size
-        amount = 1000-height
-        snd = snd.resize((1000, width+amount))        
-        snd = numpy.asarray(snd)
+        # # table_improved.draw_table(df)
+        # fig = self.generate_figure(df)
+        # img = fig.to_image(format="jpg", width = 1000, height = 800)
+        # img = numpy.asarray(Image.open(BytesIO(img)))
 
-        print(img.shape, snd.shape)
-        imgs_comb = numpy.concatenate([img, snd])
-        imgs_comb = Image.fromarray(imgs_comb)
-        imgs_comb.show()
+        # count = 1
+        # while (False in (img[count][1] == 255)): count += 1
+        # img = img[:count]
+        # shape = len(img[0])
+        
+        # snd = self.take_screenshot()
+        # width, height = snd.size
+        # amount = 1000-height
+        # snd = snd.resize((1000, width+amount))        
+        # snd = numpy.asarray(snd)
+
+        # print(img.shape, snd.shape)
+        # imgs_comb = numpy.concatenate([snd, img])
+        # imgs_comb = Image.fromarray(imgs_comb)
+        # imgs_comb.show()
 
     def crop_image(self):
         pass

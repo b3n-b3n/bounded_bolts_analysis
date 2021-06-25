@@ -175,9 +175,9 @@ class OutCalc:
         if tau[0] == '-':
             return ['-' for i in range(self.bolts_num)]
         out = []
-        rm = self.inpt.bolt_info['Rm[MPa]']
+        rms = self.inpt.bolt_info['Rms[MPa]']
         for i in range(self.bolts_num):
-            out.append(round(rm[i]/2/tau[i], self.round_to))
+            out.append(round(rms[i]/tau[i], self.round_to))
         return out
 
     def vect_to_size(self, vect):
@@ -188,21 +188,17 @@ class OutCalc:
 
     def create_dataframe(self):
         tab_data = {}  # table data
-        tab_data['ID-number'] = self.inpt.bolt_info['name']
+        tab_data['ID number'] = self.inpt.bolt_info['name']
         tab_data['d [mm]'] = self.inpt.bolt_info['diameter[mm]']
-        tab_data['Fs [N]'] = self.vect_to_size(self.calc.shear_load)
-        tab_data['Fm [N]'] = self.vect_to_size(self.calc.moment_load)
+        tab_data['Fx [N]'] = [round(self.calc.sum_load[i][0], 3) for i in range(len(self.calc.sum_load))]
+        tab_data['Fy [N]'] = [round(self.calc.sum_load[i][1], 3) for i in range(len(self.calc.sum_load))]
         tab_data['F [N]'] = self.vect_to_size(self.calc.sum_load)
         tab_data['τ [MPa]'] = self.calculate_tau(tab_data['F [N]'])
-        tab_data['RF-0 [MPa]'] = self.calculate_rf(tab_data['τ [MPa]'])
-        tab_data['σ1 [MPa]'] = self.calculate_sigma(
-            tab_data['F [N]'], self.inpt.bolt_info['t1[mm]'])
-        tab_data['σ2 [MPa]'] = self.calculate_sigma(
-            tab_data['F [N]'], self.inpt.bolt_info['t2[mm]'])
-        tab_data['RF-1 [MPa]'] = self.calculate_rfi(
-            tab_data['σ1 [MPa]'], float(self.inpt.object1['Fbry[MPa]'].get()))
-        tab_data['RF-2 [MPa]'] = self.calculate_rfi(
-            tab_data['σ2 [MPa]'], float(self.inpt.object2['Fbry[MPa]'].get()))
+        tab_data['RF [-]'] = self.calculate_rf(tab_data['τ [MPa]'])
+        tab_data['σ1 [MPa]'] = self.calculate_sigma(tab_data['F [N]'], self.inpt.bolt_info['t1[mm]'])
+        tab_data['RF1 [-]'] = self.calculate_rfi(tab_data['σ1 [MPa]'], float(self.inpt.object1['Fbry[MPa]'].get()))
+        tab_data['σ2 [MPa]'] = self.calculate_sigma(tab_data['F [N]'], self.inpt.bolt_info['t2[mm]'])
+        tab_data['RF2 [-]'] = self.calculate_rfi(tab_data['σ2 [MPa]'], float(self.inpt.object2['Fbry[MPa]'].get()))
 
         print(tab_data)
         df = pandas.DataFrame(data=tab_data)
