@@ -63,28 +63,27 @@ class Report:
         self.root.update()
 
         df = calc.OutCalc(self.calc, self.inpt).create_dataframe()
-
         
-        # # table_improved.draw_table(df)
-        # fig = self.generate_figure(df)
-        # img = fig.to_image(format="jpg", width = 1000, height = 800)
-        # img = numpy.asarray(Image.open(BytesIO(img)))
+        # table_improved.draw_table(df)
+        fig = self.generate_figure(df)
+        img = fig.to_image(format="jpg", width = 1000, height = 800)
+        img = numpy.asarray(Image.open(BytesIO(img)))
 
-        # count = 1
-        # while (False in (img[count][1] == 255)): count += 1
-        # img = img[:count]
-        # shape = len(img[0])
+        count = 1
+        while (False in (img[count][1] == 255)): count += 1
+        img = img[:count]
+        shape = len(img[0])
         
-        # snd = self.take_screenshot()
-        # width, height = snd.size
-        # amount = 1000-height
-        # snd = snd.resize((1000, width+amount))        
-        # snd = numpy.asarray(snd)
+        snd = self.take_screenshot()
+        width, height = snd.size
+        amount = 1000-height
+        snd = snd.resize((1000, width+amount))        
+        snd = numpy.asarray(snd)
 
-        # print(img.shape, snd.shape)
-        # imgs_comb = numpy.concatenate([snd, img])
-        # imgs_comb = Image.fromarray(imgs_comb)
-        # imgs_comb.show()
+        print(img.shape, snd.shape)
+        imgs_comb = numpy.concatenate([snd, img])
+        imgs_comb = Image.fromarray(imgs_comb)
+        imgs_comb.show()
 
     def crop_image(self):
         pass
