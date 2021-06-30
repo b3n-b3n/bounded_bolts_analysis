@@ -126,11 +126,10 @@ for cell in range(len(columns)):
 # Adjust layout to make room for the table:
 plt.axis('off')
 plt.tight_layout(h_pad=1, w_pad=1)
-# print(f.canvas.tostring_rgb())
 f.canvas.draw()
 buf = f.canvas.tostring_rgb()
 ncols, nrows = f.canvas.get_width_height()
-img = numpy.fromstring(buf, dtype=numpy.uint8).reshape(nrows, ncols, 3)
+img = numpy.frombuffer(buf, dtype=numpy.uint8).reshape(nrows, ncols, 3)
 
 
 start, end = 0, nrows
@@ -145,7 +144,3 @@ for y in range(len(img)):
 img = img[start-15:end+15]
 pil_img = PIL.Image.fromarray(img)
 pil_img.show()
-
-
-# plt.savefig("table_mpl.png")
-# plt.show()

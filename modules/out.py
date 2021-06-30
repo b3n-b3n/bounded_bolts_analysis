@@ -7,7 +7,6 @@ from bokeh.io import export_png, export_svgs
 from bokeh.models import ColumnDataSource, DataTable, TableColumn
 
 import calc
-import table_improved
 
 from PIL import Image
 from io import BytesIO
