@@ -79,11 +79,11 @@ def run_calculations():
 
 def create_buttons(sktch, inpt):
     button_id = [
-        'draw', 'calculate', 'generate report', 'multiple reports',
+        'draw', 'calculate', 'generate report', 'csv report',
         'fill in geometry', 'fill in load'
     ]
     functions = [
-        redraw_scheme, run_calculations, rprt.gen_image_report, sktch.idk,
+        redraw_scheme, run_calculations, rprt.gen_image_report, rprt.gen_cvs_table,
         lambda: inpt.update_data('bolt'), lambda: inpt.update_data('force')
     ]
 
@@ -127,7 +127,7 @@ sp_force = {
 inpt = input_interface.UI(root, bg, font, sp_bolt, sp_force, dname, err_lab)
 sktch = scheme.Scheme(g, inpt, cw, ch, err_lab, font, dname, inpt)
 calc = calc.Calculate(err_lab, inpt)
-rprt = out.Report(calc, inpt, root, [cw, ch], name_ent)
+rprt = out.Report(calc, inpt, root, [cw, ch], name_ent, dname)
 
 create_buttons(sktch, inpt)
 

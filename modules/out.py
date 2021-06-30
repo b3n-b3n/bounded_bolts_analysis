@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import pyautogui
+import tkinter
 import numpy
 import PIL
 import math
@@ -15,18 +16,25 @@ class Report:
     """ 
     class responsible for creating image and cvs reports of the calculations
     """
-    def __init__(self, calc, inpt, root, scheme_dimension, name_ent) -> None:
+    def __init__(self, calc, inpt, root, scheme_dimension, name_ent, dname) -> None:
         self.calc = calc
         self.inpt = inpt
         # root window to take screenshot of
         self.root = root
         self.scheme_dimension = scheme_dimension
         self.name_ent = name_ent
+        self.dname = dname
 
-    def gen_cvs_table(self):
-        pass
+    def gen_cvs_table(self) -> None:
+        df = calc.OutCalc(self.calc, self.inpt).create_dataframe()
+        path = tkinter.filedialog.asksaveasfilename(defaultextension='.csv', initialdir=self.dname+'/reports')
+        df.to_csv(path_or_buf=path)
 
-    def generate_figure(self, dataframe):
+    def generate_figure(self, dataframe) -> numpy.ndarray:
+        # get names of the material from main UI window
+        mat1_name = self.inpt.object1['name'].get()
+        mat2_name = self.inpt.object2['name'].get()
+
         tables = {'fontsize': [7, 7, 7, 6], 'cols': [1, 1 , 2, len(dataframe.columns)]}
         # get the data from dataframe
         n_rows = len(dataframe)
@@ -60,7 +68,7 @@ class Report:
                             bbox=[1 / 11 * 7, end_h, 1 / 11 * 4, h*2])
 
         tables['materials'] = plt.table(cellText=[[''] * 2],
-                            colLabels=['Material 1', 'Material 2'],
+                            colLabels=[mat1_name, mat2_name],
                             loc='bottom',
                             bbox=[1 / 11 * 7, end_h-h, 1 / 11 * 4, h*2])
 
@@ -89,7 +97,7 @@ class Report:
         img = numpy.frombuffer(buf, dtype=numpy.uint8).reshape(nrows, ncols, 3)
         return img
 
-    def take_screenshot(self):
+    def take_screenshot(self) -> PIL.Image.Image:
         # take screenshot of the schceme from root window
         width = self.scheme_dimension[0]
         height = self.scheme_dimension[1]
@@ -98,7 +106,7 @@ class Report:
 
         return pyautogui.screenshot(region=(xpos, ypos, width, height))
 
-    def cut_figure(self, img):
+    def cut_figure(self, img) -> numpy.ndarray:
         start, table_found = 0, False
         for y in range(len(img)):
             if (False in (img[y][635] == 255)) and not table_found:
@@ -108,7 +116,7 @@ class Report:
                 break
         return img[start-15:y+15]
 
-    def create_background(self, shape):
+    def create_background(self, shape) -> PIL.Image.Image:
         return numpy.ones((shape[0], shape[1], 3), dtype=numpy.uint8)*255
 
     def gen_image_report(self):
@@ -126,6 +134,7 @@ class Report:
         fig = self.cut_figure(fig)
         
         scr = self.take_screenshot()
+        print(type(scr))
         width, height = scr.size
         amount = 100
         scr = scr.resize((height+amount, width+amount))        
@@ -141,7 +150,9 @@ class Report:
         bg = numpy.asarray(bg)
         img_comb = numpy.concatenate([bg, fig])
         img_comb = Image.fromarray(img_comb)
-        img_comb.show()
+        # img_comb.show()
+        path = tkinter.filedialog.asksaveasfilename(defaultextension='.jpg', initialdir=self.dname+'/reports')
+        img_comb.save(path)
         
         # set border of name entry (in scheme) to a non zero thickness
         self.name_ent.config(highlightthickness=1)

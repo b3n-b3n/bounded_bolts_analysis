@@ -126,11 +126,6 @@ class Calculate:
         self.moment_load = self.aux.invert_vector(
             self.moment_load_func(centroid, vect, force_moment))
         self.sum_load = self.aux.zip_vectors(self.shear_load, self.moment_load)
-
-        print(self.shear_load, 'shear')
-        print(self.sum_load, 'sum')
-
-
 class OutCalc:
     """ 
     method create_dataframe returns the dicionary needed for the output table
@@ -166,7 +161,6 @@ class OutCalc:
         if sigma[0] == '-':
             return ['-' for i in range(self.bolts_num)]
         out = []
-        print(Fbry)
         for sig in sigma:
             out.append(round(Fbry/sig, self.round_to))
         return out

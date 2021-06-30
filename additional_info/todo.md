@@ -46,3 +46,4 @@ RF na 2 desatinne miesta...d na 3 ostatné na 1
     nastav border na entry boxe tak aby bol nulovy a nebolo ho vidno
 
 otypuj si veci
+put custom names to the table 
