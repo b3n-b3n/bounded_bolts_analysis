@@ -2,6 +2,20 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
+data = {
+    'ID number': ['1', '2', '3', '4', 9.525, 9.525, 9.525, '2', '3', '4', 9.525, 9.525, 9.525],
+    'd [mm]': [9.525, 9.525, 9.525, 9.525, 9.525, 9.525, 9.525, '2', '3', '4', 9.525, 9.525, 9.525],
+    'Fx [N]': [-8.022, -6.171, -3.086, -6.171, 9.525, 9.525, 9.525, '2', '3', '4', 9.525, 9.525, 9.525],
+    'Fy [N]': [33.03, 25.408, 12.704, 25.408, 9.525, 9.525, 9.525, '2', '3', '4', 9.525, 9.525, 9.525],
+    'F [N]': [33.99, 26.15, 13.07, 26.15, 9.525, 9.525, 9.525, '2', '3', '4', 9.525, 9.525, 9.525],
+    'τ [MPa]': [254.28, 195.63, 97.78, 195.63, 9.525, 9.525, 9.525, '2', '3', '4', 9.525, 9.525, 9.525],
+    'RF [-]': [0.39, 1.03, 0.01, 1.03, 9.525, 9.525, 9.525, '2', '3', '4', 9.525, 9.525, 9.525],
+    'σ1 [MPa]': [3.57, 2.75, 0.53, 2.75, 9.525, 9.525, 9.525, '2', '3', '4', 9.525, 9.525, 9.525],
+    'RF1 [-]': [0.28, 0.36, 1.89, 0.36, 9.525, 9.525, 9.525, '2', '3', '4', 9.525, 9.525, 9.525],
+    'σ2 [MPa]': [3.57, 2.75, 0.01, 2.75, 9.525, 9.525, 9.525, '2', '3', '4', 9.525, 9.525, 9.525],
+    'RF2 [-]': [0.28, 0.36, 100.0, 0.36, 9.525, 9.525, 9.525, '2', '3', '4', 9.525, 9.525, 9.525]
+}
+
 data2 = {
     'ID number': ['1', '2', '3', '4'],
     'd [mm]': [9.525, 9.525, 9.525, 9.525],
@@ -16,14 +30,15 @@ data2 = {
     'RF2 [-]': [0.28, 0.36, 100.0, 0.36]
 }
 
-d = list(data2.values())
+d = list(data.values())
 values = [[d[j][i] for j in range(len(d))] for i in range(len(d[0]))]
+plt.subplots(figsize=(7, 6))
 
 table = plt.table(
     cellText=values,
     colLabels=list(data2.keys()),
     cellLoc='center',
-    loc={'bottom': 0,'top': 0})
+    loc='upper center')
 
 h = table.get_celld()[(0, 0)].get_height()
 w = table.get_celld()[(0, 0)].get_width()
@@ -31,7 +46,8 @@ c = ['k', 'k', 'k', 'k', 'k', 'b', 'b', 'r', 'r', 'r', 'r']
 c2 = ['w', 'w', 'w', 'w', 'w', 'w', 'w', '0.8', '0.8', '0.6', '0.6']
 
 table.auto_set_font_size(False)
-table.set_fontsize(5.5)
+table.set_fontsize(6)
+
 for y in range(len(d[0])+1):
     for x in range((len(d))):
         table[(y, x)].set_edgecolor(c[x])
@@ -74,9 +90,9 @@ blue_patch = mpatches.Patch(color='blue', label='Bolt Strength Analysis')
 p = mpatches.Patch(color='0.8', label='Material1')
 p2 = mpatches.Patch(color='0.6', label='Material2')
 
-plt.legend(handles=[red_patch, blue_patch, p, p2], ncol=2, bbox_to_anchor=(0.8, 0.8))
 
-plt.tight_layout(h_pad=1, w_pad=1)
 plt.axis('off')
+plt.tight_layout()
+plt.legend(handles=[red_patch, blue_patch, p, p2], ncol=4, loc=(0.12, 0.99), fontsize='x-small')
 plt.savefig("table_mpl.png", pad_inches=0, dpi=1000)
 plt.show()

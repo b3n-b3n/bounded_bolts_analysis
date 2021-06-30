@@ -72,7 +72,7 @@ class Report:
         count = 1
         while (False in (img[count][1] == 255)): count += 1
         img = img[:count]
-        shape = len(img[0])
+        shape = len(img[0]);
         
         snd = self.take_screenshot()
         width, height = snd.size
