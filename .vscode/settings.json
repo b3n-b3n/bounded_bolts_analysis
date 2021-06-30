@@ -1,6 +1,6 @@
 {
     "python.analysis.extraPaths": [
-        "/home/ben/Documents/code/aeromobil/eccentric_joints/code/"
+        "/home/ben/Documents/code/aeromobil/eccentric_joints/modules/"
     ],
     "python.pythonPath": "/usr/bin/python3",
     "python.formatting.provider": "yapf"
