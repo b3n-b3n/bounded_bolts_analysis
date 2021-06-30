@@ -11,7 +11,7 @@ import out
 import calc
 
 # get a path to this file
-dname = r'{}'.format(os.path.realpath(__file__).replace('code/main.py', ''))
+dname = r'{}'.format(os.path.realpath(__file__).replace('modules/main.py', ''))
 # change the working directory if it is somewhere else
 os.chdir(dname)
 
@@ -37,8 +37,8 @@ g = tkinter.Canvas(root,
                    highlightthickness=0)
 g.grid(row=1, column=1, rowspan=2, sticky='s')
 
-tkinter.Entry(root, font=font[3], justify='center',
-              width=40).grid(row=1, column=1, pady=(0, 150))
+name_ent = tkinter.Entry(root, font=font[3], justify='center', width=40,  borderwidth=0, highlightthickness=1)
+name_ent.grid(row=1, column=1, pady=(0, 150))
 
 
 def calculate_centroid(bolts):
@@ -127,7 +127,7 @@ sp_force = {
 inpt = input_interface.UI(root, bg, font, sp_bolt, sp_force, dname, err_lab)
 sktch = scheme.Scheme(g, inpt, cw, ch, err_lab, font, dname, inpt)
 calc = calc.Calculate(err_lab, inpt)
-rprt = out.Report(calc, inpt, root, [cw, ch])
+rprt = out.Report(calc, inpt, root, [cw, ch], name_ent)
 
 create_buttons(sktch, inpt)
 

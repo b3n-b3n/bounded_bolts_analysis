@@ -15,12 +15,13 @@ class Report:
     """ 
     class responsible for creating image and cvs reports of the calculations
     """
-    def __init__(self, calc, inpt, root, scheme_dimension) -> None:
+    def __init__(self, calc, inpt, root, scheme_dimension, name_ent) -> None:
         self.calc = calc
         self.inpt = inpt
         # root window to take screenshot of
         self.root = root
         self.scheme_dimension = scheme_dimension
+        self.name_ent = name_ent
 
     def gen_cvs_table(self):
         pass
@@ -107,9 +108,13 @@ class Report:
                 break
         return img[start-15:y+15]
 
+    def create_background(self, shape):
+        return numpy.ones((shape[0], shape[1], 3), dtype=numpy.uint8)*255
+
     def gen_image_report(self):
         # set focus away from the entry box so that it is not highlighted
         self.root.focus_set()
+        self.name_ent.config(highlightthickness=0)
         self.root.update()
 
         df = calc.OutCalc(self.calc, self.inpt).create_dataframe()
@@ -119,49 +124,24 @@ class Report:
 
         # cut off the white strips from the figure
         fig = self.cut_figure(fig)
-        pil_img = PIL.Image.fromarray(fig)
-        pil_img.show()
-
         
+        scr = self.take_screenshot()
+        width, height = scr.size
+        amount = 100
+        scr = scr.resize((height+amount, width+amount))        
+
+        # get white backround to paste the screenshot on
+        bg_size = [scr.size[1], len(fig[0])]
+        bg = PIL.Image.fromarray(self.create_background(bg_size))
+
+        x = int(bg_size[1]/2-scr.size[0]/2)
+        bg.paste(scr, (x, 0))
+        # bg.show()
         
-        # snd = self.take_screenshot()
-        # width, height = snd.size
-        # amount = 1000-height
-        # snd = snd.resize((1000, width+amount))        
-        # snd = numpy.asarray(snd)
-
-        # print(img.shape, snd.shape)
-        # imgs_comb = numpy.concatenate([snd, img])
-        # imgs_comb = Image.fromarray(imgs_comb)
-        # imgs_comb.show()
-
-    def crop_image(self):
-        pass
-
-
-# pix = numpy.asarray(i)
-
-# count = 1
-# while (False in (pix[count][1] == 255)) or (False in (pix[count+1][1] == 255)):
-#     count += 1
-
-# pix = pix[:count]
-# out = im = Image.fromarray(numpy.uint8(pix))
-# out.show()
-
-
-# fig.show()
-
-
-
-"""
-======================================================================= 
-Open I as an array:
-
->>> I = numpy.asarray(PIL.Image.open('test.jpg'))
-
-Do some stuff to I, then, convert it back to an image:
-
->>> im = PIL.Image.fromarray(numpy.uint8(I))
-=======================================================================
-"""
+        bg = numpy.asarray(bg)
+        img_comb = numpy.concatenate([bg, fig])
+        img_comb = Image.fromarray(img_comb)
+        img_comb.show()
+        
+        # set border of name entry (in scheme) to a non zero thickness
+        self.name_ent.config(highlightthickness=1)
