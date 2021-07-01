@@ -30,7 +30,17 @@ class Report:
         path = tkinter.filedialog.asksaveasfilename(defaultextension='.csv', initialdir=self.dname+'/reports')
         df.to_csv(path_or_buf=path)
 
+    def round_values(self, df, num=[3, 1, 1, 1, 1, 2, 1, 1, 1, 1]):
+        rows = len(df['ID Number'])
+        for idx, column in enumerate(df.columns[1:]):
+            for i in range(rows):
+                df[column][i] = round(df[column][i], num[idx])
+        return df
+
     def generate_figure(self, dataframe) -> numpy.ndarray:
+        # round of the values so they fit into the table
+        dataframe = self.round_values(dataframe)
+
         # get names of the material from main UI window
         mat1_name = self.inpt.object1['name'].get()
         mat2_name = self.inpt.object2['name'].get()

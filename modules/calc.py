@@ -136,7 +136,6 @@ class OutCalc:
         self.inpt = inpt
         self.calc = calc
         self.bolts_num = len(self.inpt.bolt_info['name'])
-        self.round_to = 2
 
     def calculate_tau(self, vect):
         out = []
@@ -145,7 +144,7 @@ class OutCalc:
         d = self.inpt.bolt_info['diameter[mm]']
         for i in range(len(vect)):
             area = math.pi*d[i] / 4
-            out.append(round(float(vect[i])*area, self.round_to))
+            out.append(float(vect[i])*area)
         return out
 
     def calculate_sigma(self, vect, t):
@@ -154,7 +153,7 @@ class OutCalc:
         out = []
         d = self.inpt.bolt_info['diameter[mm]']
         for i in range(len(vect)):
-            out.append(round(vect[i] / (d[i]*t[i]), self.round_to))
+            out.append(vect[i] / (d[i]*t[i]))
         return out
 
     def calculate_rfi(self, sigma, Fbry):
@@ -162,7 +161,7 @@ class OutCalc:
             return ['-' for i in range(self.bolts_num)]
         out = []
         for sig in sigma:
-            out.append(round(Fbry/sig, self.round_to))
+            out.append(Fbry/sig)
         return out
 
     def calculate_rf(self, tau):
@@ -171,21 +170,21 @@ class OutCalc:
         out = []
         rms = self.inpt.bolt_info['Rms[MPa]']
         for i in range(self.bolts_num):
-            out.append(round(rms[i]/tau[i], self.round_to))
+            out.append(rms[i]/tau[i])
         return out
 
     def vect_to_size(self, vect):
         # takes vector and calculates its size
         if not vect:
             return ['-' for i in range(self.bolts_num)]
-        return [round(math.sqrt(vect[i][0]**2 + vect[i][1]**2), self.round_to) for i in range(len(vect))]
+        return [math.sqrt(vect[i][0]**2 + vect[i][1]**2) for i in range(len(vect))]
 
     def create_dataframe(self):
         tab_data = {}  # table data
-        tab_data['ID number'] = self.inpt.bolt_info['name']
+        tab_data['ID Number'] = self.inpt.bolt_info['name']
         tab_data['d [mm]'] = self.inpt.bolt_info['diameter[mm]']
-        tab_data['Fx [N]'] = [round(self.calc.sum_load[i][0], 3) for i in range(len(self.calc.sum_load))]
-        tab_data['Fy [N]'] = [round(self.calc.sum_load[i][1], 3) for i in range(len(self.calc.sum_load))]
+        tab_data['Fx [N]'] = [self.calc.sum_load[i][0] for i in range(len(self.calc.sum_load))]
+        tab_data['Fy [N]'] = [self.calc.sum_load[i][1] for i in range(len(self.calc.sum_load))]
         tab_data['F [N]'] = self.vect_to_size(self.calc.sum_load)
         tab_data['τ [MPa]'] = self.calculate_tau(tab_data['F [N]'])
         tab_data['RF [-]'] = self.calculate_rf(tab_data['τ [MPa]'])

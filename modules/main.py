@@ -88,17 +88,10 @@ def create_buttons(sktch, inpt):
     ]
 
     for index, id in enumerate(button_id):
-        tkinter.Button(inpt.buttons,
-                       text=id,
-                       command=functions[index],
-                       width=15,
-                       font=font[1],
-                       bg=bg,
-                       relief=relief).grid(row=index // 2,
-                                           column=index % 2,
-                                           sticky='e' + 'w',
-                                           padx=2,
-                                           pady=2)
+        tkinter.Button(inpt.buttons, text=id, command=functions[index], height=2,
+                       font=font[1],bg=bg, relief=relief, width=18).grid(
+                            row=index // 2,column=index % 2,
+                            sticky='e' + 'w', padx=2,pady=2)
 
 
 # INPUT FORMAT ------------------------------------------

@@ -39,7 +39,7 @@ class UI:
 
         self.buttons = tkinter.LabelFrame(
             text='buttons', relief='solid', bg=self.bg)
-        self.buttons.grid(row=2, column=0, sticky='n'+'e'+'w', padx=5)
+        self.buttons.grid(row=2, column=0, sticky='n'+'e'+'w'+'s', padx=5, pady=5)
 
         tkinter.Button(self.table, text='edit geometry data', command=lambda: self.input_table('bolt'),
                        font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
