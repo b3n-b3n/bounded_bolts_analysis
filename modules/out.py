@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
+import pandas
 import pyautogui
 import tkinter
+import pandas
 import numpy
 import PIL
 import math
@@ -16,7 +18,8 @@ class Report:
     """ 
     class responsible for creating image and cvs reports of the calculations
     """
-    def __init__(self, calc, inpt, root, scheme_dimension, name_ent, dname) -> None:
+    def __init__(self, calc, inpt, root: tkinter.Tk, scheme_dimension: list, name_ent: tkinter.Entry, dname: str) -> None:
+        print(type(calc), type(inpt),type(root),type(name_ent),)
         self.calc = calc
         self.inpt = inpt
         # root window to take screenshot of
@@ -30,25 +33,26 @@ class Report:
         path = tkinter.filedialog.asksaveasfilename(defaultextension='.csv', initialdir=self.dname+'/reports')
         df.to_csv(path_or_buf=path)
 
-    def round_values(self, df, num=[3, 1, 1, 1, 1, 2, 1, 1, 1, 1]):
+    def round_values(self, df: pandas.DataFrame, num=[3, 1, 1, 1, 1, 2, 1, 1, 1, 1]):
         rows = len(df['ID Number'])
         for idx, column in enumerate(df.columns[1:]):
             for i in range(rows):
                 df[column][i] = round(df[column][i], num[idx])
         return df
 
-    def generate_figure(self, dataframe) -> numpy.ndarray:
+    def generate_figure(self, df: pandas.DataFrame) -> numpy.ndarray:
         # round of the values so they fit into the table
-        dataframe = self.round_values(dataframe)
+        df = self.round_values(df)
 
         # get names of the material from main UI window
         mat1_name = self.inpt.object1['name'].get()
         mat2_name = self.inpt.object2['name'].get()
 
-        tables = {'fontsize': [7, 7, 7, 6], 'cols': [1, 1 , 2, len(dataframe.columns)]}
-        # get the data from dataframe
-        n_rows = len(dataframe)
-        cell_text = [[dataframe[col][row] for col in dataframe.columns] for row in range(n_rows)]
+        tables = {'fontsize': [7, 7, 7, 6], 'cols': [1, 1 , 2, len(df.columns)]}
+        
+        # get the data from the dataframe
+        n_rows = len(df)
+        cell_text = [[df[col][row] for col in df.columns] for row in range(n_rows)]
 
         # define dimensions of the plot
         # these should not be changed because cropping of image depends
@@ -57,7 +61,7 @@ class Report:
 
         # create table just to get size of a singe cell for calculation
         # of position of the headers
-        the_table = plt.table(cellText=cell_text, colLabels=dataframe.columns, loc='center')
+        the_table = plt.table(cellText=cell_text, colLabels=df.columns, loc='center')
 
         # height of the cell
         h = the_table.get_celld()[(0, 0)].get_height()
@@ -83,7 +87,7 @@ class Report:
                             bbox=[1 / 11 * 7, end_h-h, 1 / 11 * 4, h*2])
 
         tables['the_table'] = plt.table(cellText=cell_text,
-                            colLabels=dataframe.columns,
+                            colLabels=df.columns,
                             cellLoc='center',
                             colLoc='center',
                             loc='center')
@@ -116,7 +120,7 @@ class Report:
 
         return pyautogui.screenshot(region=(xpos, ypos, width, height))
 
-    def cut_figure(self, img) -> numpy.ndarray:
+    def cut_figure(self, img: numpy.ndarray) -> numpy.ndarray:
         start, table_found = 0, False
         for y in range(len(img)):
             if (False in (img[y][635] == 255)) and not table_found:
@@ -129,7 +133,7 @@ class Report:
     def create_background(self, shape) -> PIL.Image.Image:
         return numpy.ones((shape[0], shape[1], 3), dtype=numpy.uint8)*255
 
-    def gen_image_report(self):
+    def gen_image_report(self) -> None:
         # set focus away from the entry box so that it is not highlighted
         self.root.focus_set()
         self.name_ent.config(highlightthickness=0)
