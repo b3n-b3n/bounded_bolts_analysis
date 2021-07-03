@@ -2,66 +2,7 @@ from tkscrolledframe import ScrolledFrame
 import tkinter
 import os
 
-
-class UI:
-    """ this class creates interface where the user can input data"""
-
-    def __init__(self, root, bg, font, bolt, force, dname, err_lab):
-        self.bg = bg
-        self.font = font
-        self.path = dname
-        self.bolt_info = bolt
-        self.relief = 'groove'
-        self.err_lab = err_lab
-        self.force_info = force
-        
-        self.force_moment_entry = None
-        self.force_moment_entry_name = None
-        self.force_moment = ''
-        self.force_moment_label = 'M'
-
-        # --LABELFRAMES------------------------------------------------------------------
-        self.inputs = tkinter.LabelFrame(
-            root, text='inputs', relief='solid', bg=self.bg)
-        self.inputs.grid(row=0, column=0, rowspan=2, sticky='n'+'e'+'w', ipady=5, ipadx=5, padx=5)
-
-        self.table = tkinter.LabelFrame(
-            self.inputs, text='input_tables', relief='groove', bg=self.bg)
-        self.table.grid(row=0, column=0, sticky='e'+'w')
-
-        self.obj1 = tkinter.LabelFrame(
-            self.inputs, text='connection material 1', relief='groove', bg=self.bg)
-        self.obj1.grid(row=1, column=0, sticky='n'+'e'+'w'+'s')
-
-        self.obj2 = tkinter.LabelFrame(
-            self.inputs, text='connection material 2', relief='groove', bg=self.bg)
-        self.obj2.grid(row=2, column=0, sticky='n'+'e'+'w'+'s')
-
-        self.buttons = tkinter.LabelFrame(
-            text='buttons', relief='solid', bg=self.bg)
-        self.buttons.grid(row=2, column=0, sticky='n'+'e'+'w'+'s', padx=5, pady=5)
-
-        tkinter.Button(self.table, text='edit geometry data', command=lambda: self.input_table('bolt'),
-                       font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
-
-        tkinter.Button(self.table, text='edit load data', command=lambda: self.input_table('force'),
-                       font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
-
-        self.object1 = {}
-        self.object2 = {}
-
-        self.object1_ui()
-        self.object2_ui()
-
-    def choose_width(self, idx, width):
-        """returns desired width for an entry box
-        the ones containing name should be wider"""
-
-        if idx == 0: return width[1]
-        else: return width[0]
-
-
-    # --INPUT TABLES------------------------------------------------
+class InputTable:
     def input_table(self, table_type):
         """function responsible for generating the input table
         for both force and bolt data
@@ -232,9 +173,66 @@ class UI:
         tkinter.Button(nroot, text='submit data', command=submit_data).grid(row=1, column=2, rowspan=2, sticky='n'+'s'+'e'+'w')
         nroot.bind('<Tab>', select_entry)
         nroot.mainloop()
+    
 
+class Interface:
+    """ this class creates interface where the user can input data"""
+
+    def __init__(self, root, bg, font, bolt, force, dname, err_lab):
+        self.bg = bg
+        self.font = font
+        self.path = dname
+        self.bolt_info = bolt
+        self.relief = 'groove'
+        self.err_lab = err_lab
+        self.force_info = force
+        
+        self.force_moment_entry = None
+        self.force_moment_entry_name = None
+        self.force_moment = ''
+        self.force_moment_label = 'M'
+
+        self.object1 = {}
+        self.object2 = {}
+
+        self.construct_labelframes()
+        self.construct_object1_UI()
+        self.construct_object2_UI()
+
+    def construct_labelframes(self):
+        self.inputs = tkinter.LabelFrame(text='inputs', relief='solid', bg=self.bg)
+        self.inputs.grid(row=0, column=0, rowspan=2, sticky='n'+'e'+'w', ipady=5, ipadx=5, padx=5)
+
+        self.table = tkinter.LabelFrame(self.inputs, text='input_tables', relief='groove', bg=self.bg)
+        self.table.grid(row=0, column=0, sticky='e'+'w')
+
+        self.obj1 = tkinter.LabelFrame(self.inputs, text='connection material 1', relief='groove', bg=self.bg)
+        self.obj1.grid(row=1, column=0, sticky='n'+'e'+'w'+'s')
+
+        self.obj2 = tkinter.LabelFrame(self.inputs, text='connection material 2', relief='groove', bg=self.bg)
+        self.obj2.grid(row=2, column=0, sticky='n'+'e'+'w'+'s')
+
+        self.buttons = tkinter.LabelFrame(text='buttons', relief='solid', bg=self.bg)
+        self.buttons.grid(row=2, column=0, sticky='n'+'e'+'w'+'s', padx=5, pady=5)
+
+        tkinter.Button(self.table, text='edit geometry data', command=lambda: self.input_table('bolt'),
+                       font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
+
+        tkinter.Button(self.table, text='edit load data', command=lambda: self.input_table('force'),
+                       font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
+
+    def choose_width(self, idx, width):
+        """returns desired width for an entry box
+        the ones containing name should be wider"""
+
+        if idx == 0: return width[1]
+        else: return width[0]
+
+
+    # --INPUT TABLES------------------------------------------------
+    
     # MATERIAL INFORMATION -------------------------------------------
-    def object1_ui(self):
+    def construct_object1_UI(self):
         entry_id = ['name', 'Fbry[MPa]']
         for index, id in enumerate(entry_id):
             tkinter.Label(self.obj1, text=id, font=self.font[1],
@@ -245,7 +243,7 @@ class UI:
             if id == 'name': self.object1[id].insert(0, 'Material 1')
             else: self.object1[id].insert(0, '1')
 
-    def object2_ui(self):
+    def construct_object2_UI(self):
         entry_id = ['name', 'Fbry[MPa]']
         for index, id in enumerate(entry_id):
             tkinter.Label(self.obj2, text=id, font=self.font[1],
