@@ -61,7 +61,7 @@ class InputTable:
         scrll_frm.grid(row=0, column=0, columnspan=3)
 
         # Bind the arrow keys and scroll wheel
-        scrll_frm.bind_arrow_keys(nroot)
+        # scrll_frm.bind_arrow_keys(nroot)
         scrll_frm.bind_scroll_wheel(nroot)
 
         # Create a frame within the ScrolledFrame
@@ -139,7 +139,7 @@ class InputTable:
                                 entrys_id[i+1][0].focus()
                                 entrys_id[i+1][0].delete(0, 'end')
                                 entrys_id[i+1][0].insert(0,
-                                                         info[entrys[0]][i])
+                                                            info[entrys[0]][i])
                     else:
                         entrys_id[i][idx+1].focus()
                         if i != 0 and 2 < idx+1:
