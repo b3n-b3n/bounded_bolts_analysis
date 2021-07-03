@@ -18,10 +18,12 @@ class Report:
     """ 
     class responsible for creating image and cvs reports of the calculations
     """
-    def __init__(self, calc, inpt, root: tkinter.Tk, scheme_dimension: list,
+    def __init__(self, calc, inpt, table, root: tkinter.Tk, scheme_dimension: list,
                  name_ent: tkinter.Entry, dname: str) -> None:
         self.calc = calc
         self.inpt = inpt
+        self.table = table
+
         # root window to take screenshot of
         self.root = root
         self.scheme_dimension = scheme_dimension
@@ -33,7 +35,7 @@ class Report:
         pandas.options.mode.chained_assignment = None
 
     def gen_cvs_table(self) -> None:
-        df = calc.OutCalc(self.calc, self.inpt).create_dataframe()
+        df = calc.OutCalc(self.calc, self.inpt, self.table).create_dataframe()
         path = tkinter.filedialog.asksaveasfilename(defaultextension='.csv',
                                                     initialdir=self.dname +
                                                     '/reports')
@@ -151,7 +153,7 @@ class Report:
         self.name_ent.config(highlightthickness=0)
         self.root.update()
 
-        df = calc.OutCalc(self.calc, self.inpt).create_dataframe()
+        df = calc.OutCalc(self.calc, self.inpt, self.table).create_dataframe()
 
         # get the table represented as a list of pixels
         fig = self.generate_figure(df)

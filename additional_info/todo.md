@@ -47,9 +47,8 @@ the main interface so it looks somewhat nice {cm:2021-07-01}
 otypuj si veci hlavne v calc (keď sa do toho bude niekto pozerať aby to aj dávalo zmysel) {cm:2021-07-03}
 unbind arrow keys {cm:2021-07-03}
 take in csv file as an input {cm:2021-07-03}
+format all the code {cm:2021-07-03}
 
-
-format all the code
 pridaj všetky exceptions
 dokumentáciuuu treba
 skontroluj či to robí to čo to má robiť

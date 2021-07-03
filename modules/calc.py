@@ -126,16 +126,17 @@ class OutCalc:
     method create_dataframe returns the dicionary needed for the output table
     other methods are used for evaluation of the results and auxiliary calculations
     """
-    def __init__(self, calc, inpt) -> None:
-        self.inpt = inpt
+    def __init__(self, calc, inpt, table) -> None:
+        self.table = table
         self.calc = calc
-        self.bolts_num = len(self.inpt.bolt_info['name'])
+        self.inpt = inpt
+        self.bolts_num = len(self.table.bolt_info['name'])
 
     def calculate_tau(self, vect) -> list:
         out = []
         if vect[0] == '-':
             return ['-' for i in range(self.bolts_num)]
-        d = self.inpt.bolt_info['diameter[mm]']
+        d = self.table.bolt_info['diameter[mm]']
         for i in range(len(vect)):
             area = math.pi * d[i] / 4
             out.append(float(vect[i]) * area)
@@ -145,7 +146,7 @@ class OutCalc:
         if vect[0] == '-':
             return ['-' for i in range(self.bolts_num)]
         out = []
-        d = self.inpt.bolt_info['diameter[mm]']
+        d = self.table.bolt_info['diameter[mm]']
         for i in range(len(vect)):
             out.append(vect[i] / (d[i] * t[i]))
         return out
@@ -162,7 +163,7 @@ class OutCalc:
         if tau[0] == '-':
             return ['-' for i in range(self.bolts_num)]
         out = []
-        rms = self.inpt.bolt_info['Rms[MPa]']
+        rms = self.table.bolt_info['Rms[MPa]']
         for i in range(self.bolts_num):
             out.append(rms[i] / tau[i])
         return out
@@ -177,8 +178,8 @@ class OutCalc:
 
     def create_dataframe(self) -> pandas.DataFrame:
         tab_data = {}  # table data
-        tab_data['ID Number'] = self.inpt.bolt_info['name']
-        tab_data['d [mm]'] = self.inpt.bolt_info['diameter[mm]']
+        tab_data['ID Number'] = self.table.bolt_info['name']
+        tab_data['d [mm]'] = self.table.bolt_info['diameter[mm]']
         tab_data['Fx [N]'] = [
             self.calc.sum_load[i][0] for i in range(len(self.calc.sum_load))
         ]
@@ -189,11 +190,11 @@ class OutCalc:
         tab_data['τ [MPa]'] = self.calculate_tau(tab_data['F [N]'])
         tab_data['RF [-]'] = self.calculate_rf(tab_data['τ [MPa]'])
         tab_data['σ1 [MPa]'] = self.calculate_sigma(
-            tab_data['F [N]'], self.inpt.bolt_info['t1[mm]'])
+            tab_data['F [N]'], self.table.bolt_info['t1[mm]'])
         tab_data['RF1 [-]'] = self.calculate_rfi(
             tab_data['σ1 [MPa]'], float(self.inpt.object1['Fbry[MPa]'].get()))
         tab_data['σ2 [MPa]'] = self.calculate_sigma(
-            tab_data['F [N]'], self.inpt.bolt_info['t2[mm]'])
+            tab_data['F [N]'], self.table.bolt_info['t2[mm]'])
         tab_data['RF2 [-]'] = self.calculate_rfi(
             tab_data['σ2 [MPa]'], float(self.inpt.object2['Fbry[MPa]'].get()))
 

@@ -130,9 +130,9 @@ sp_force = {
 table = input_interface.InputTable(sp_bolt, sp_force, dname)
 inpt = input_interface.Interface(root, bg, font, err_lab, table)
 
-sktch = scheme.Scheme(g, inpt, cw, ch, err_lab, font, dname, inpt)
+sktch = scheme.Scheme(g, inpt, cw, ch, err_lab, font, dname, table)
 calc = calc.Calculate(err_lab, table)
-rprt = out.Report(calc, inpt, root, [cw, ch], name_ent, dname)
+rprt = out.Report(calc, inpt, table, root, [cw, ch], name_ent, dname)
 
 create_buttons(sktch, inpt)
 
