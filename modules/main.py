@@ -19,7 +19,7 @@ root = tkinter.Tk()
 root.title('eccentric joints')
 
 # general appearance options
-bg = 'grey99'
+bg = 'grey100'
 root['bg'] = bg
 ch = 400  # canvas height
 cw = 400  # canvas width
@@ -33,7 +33,7 @@ err_lab.grid(row=0, column=1, pady=(10, 0))
 g = tkinter.Canvas(root,
                    width=cw,
                    height=ch,
-                   bg='grey99',
+                   bg=bg,
                    highlightthickness=0)
 g.grid(row=1, column=1, rowspan=2, sticky='s')
 
@@ -59,8 +59,8 @@ def calculate_centroid(bolts):
 def redraw_scheme():
     # a tkinter button cannot have more than one fuctions bounded to it
     # try:
-    centroid = calculate_centroid(inpt.bolt_info)
-    sktch.redraw(inpt.bolt_info, inpt.force_info, centroid)
+    centroid = calculate_centroid(table.bolt_info)
+    sktch.redraw(table.bolt_info, table.force_info, centroid)
     # except:
     #     # if the user inputs wrong data manually
     #     err_lab.config(text='there are none or invalid geometry and/or force data')
@@ -69,9 +69,9 @@ def redraw_scheme():
 def run_calculations():
     # a tkinter button cannot have more than one fuctions bounded to it
     # try:
-    centroid = calculate_centroid(inpt.bolt_info)
-    calc.calc_driver(centroid, inpt.force_moment)
-    sktch.redraw(inpt.bolt_info, inpt.force_info, centroid, calc.sum_load)
+    centroid = calculate_centroid(table.bolt_info)
+    calc.calc_driver(centroid, table.force_moment)
+    sktch.redraw(table.bolt_info, table.force_info, centroid, calc.sum_load)
     # except:
     #     # if the user inputs wrong data manually
     #     err_lab.config(text='there are none or invalid geometry and/or force data')
@@ -84,7 +84,7 @@ def create_buttons(sktch, inpt):
     ]
     functions = [
         redraw_scheme, run_calculations, rprt.gen_image_report, rprt.gen_cvs_table,
-        lambda: inpt.update_data('bolt'), lambda: inpt.update_data('force')
+        lambda: table.load_data('bolt'), lambda: table.load_data('force')
     ]
 
     for index, id in enumerate(button_id):
@@ -117,9 +117,11 @@ sp_force = {
 }
 
 # CLASS INITIALIZAION --------------------------------------
-inpt = input_interface.UI(root, bg, font, sp_bolt, sp_force, dname, err_lab)
+table = input_interface.InputTable(sp_bolt, sp_force, dname)
+inpt = input_interface.Interface(root, bg, font, err_lab, table)
+
 sktch = scheme.Scheme(g, inpt, cw, ch, err_lab, font, dname, inpt)
-calc = calc.Calculate(err_lab, inpt)
+calc = calc.Calculate(err_lab, table)
 rprt = out.Report(calc, inpt, root, [cw, ch], name_ent, dname)
 
 create_buttons(sktch, inpt)

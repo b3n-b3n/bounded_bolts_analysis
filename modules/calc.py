@@ -47,13 +47,13 @@ class Auxilliary:
 
 
 class Calculate:
-    def __init__(self, err_lab: tkinter.Label, inpt) -> None:
+    def __init__(self, err_lab: tkinter.Label, table) -> None:
         self.G_denom = 2.6  # denominator in calculation of G
         self.err_lab = err_lab
 
         # data provided by user
-        self.bolt = inpt.bolt_info
-        self.force = inpt.force_info
+        self.bolt = table.bolt_info
+        self.force = table.force_info
 
         self.aux = Auxilliary()
 
@@ -186,6 +186,5 @@ class OutCalc:
         tab_data['σ2 [MPa]'] = self.calculate_sigma(tab_data['F [N]'], self.inpt.bolt_info['t2[mm]'])
         tab_data['RF2 [-]'] = self.calculate_rfi(tab_data['σ2 [MPa]'], float(self.inpt.object2['Fbry[MPa]'].get()))
 
-        print(tab_data)
         df = pandas.DataFrame(data=tab_data)
         return df

@@ -19,7 +19,6 @@ class Report:
     class responsible for creating image and cvs reports of the calculations
     """
     def __init__(self, calc, inpt, root: tkinter.Tk, scheme_dimension: list, name_ent: tkinter.Entry, dname: str) -> None:
-        print(type(calc), type(inpt),type(root),type(name_ent),)
         self.calc = calc
         self.inpt = inpt
         # root window to take screenshot of
@@ -27,6 +26,11 @@ class Report:
         self.scheme_dimension = scheme_dimension
         self.name_ent = name_ent
         self.dname = dname
+
+        # if you modify values in dataframe (func round_values ) it wont not propagate back 
+        # to the original data but that is what I want and, so I turned of this error massage
+        pandas.options.mode.chained_assignment = None
+
 
     def gen_cvs_table(self) -> None:
         df = calc.OutCalc(self.calc, self.inpt).create_dataframe()
@@ -42,7 +46,7 @@ class Report:
 
     def generate_figure(self, df: pandas.DataFrame) -> numpy.ndarray:
         # round of the values so they fit into the table
-        df = self.round_values(df)
+        df = self.round_values(df.copy())
 
         # get names of the material from main UI window
         mat1_name = self.inpt.object1['name'].get()
@@ -148,7 +152,7 @@ class Report:
         fig = self.cut_figure(fig)
         
         scr = self.take_screenshot()
-        print(type(scr))
+
         width, height = scr.size
         amount = 100
         scr = scr.resize((height+amount, width+amount))        

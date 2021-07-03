@@ -3,13 +3,35 @@ import tkinter
 import os
 
 class InputTable:
-    def input_table(self, table_type):
-        """function responsible for generating the input table
-        for both force and bolt data
-        
-        it includes all the secondary functions for table like add
-        submit or remove"""
+    """class responsible for generating the input table
+    for both force and bolt data
+    
+    it includes all the secondary functions for table like add
+    submit or remove"""
 
+    def __init__(self, bolt, force, dname):
+        self.table_type = None
+        self.bolt_info = bolt
+        self.force_info = force
+        self.path = dname
+
+        self.force_moment_entry = None
+        self.force_moment_entry_label = None
+        self.force_moment = ''
+        self.force_moment_label = 'M'
+
+    def choose_width(self, idx, width):
+        """returns desired width for an entry box
+        the ones containing name should be wider"""
+
+        if idx == 0: return width[1]
+        else: return width[0]
+
+    def construct_table(self, table_type):
+        """
+        function which constructs input tables for either force or geometry data
+        it has inner function which provide functionality 
+        """
         nroot = tkinter.Tk()
         nroot.title('input table')
         entrys_id = []
@@ -17,9 +39,11 @@ class InputTable:
 
         if table_type == 'bolt':
             width, height = 860, 250
+            self.table_type  = table_type
             info = self.bolt_info
         else:
             width, height = 600, 250
+            self.table_type  = table_type
             info = self.force_info
 
         entrys = list(info.keys())
@@ -94,7 +118,7 @@ class InputTable:
                 self.bolt_info = info.copy()
             else:
                 self.force_moment = float(self.force_moment_entry.get())
-                self.force_moment_label = self.force_moment_entry_name.get()
+                self.force_moment_label = self.force_moment_entry_label.get()
                 self.force_info = info.copy()
             return 'ok'
 
@@ -158,9 +182,9 @@ class InputTable:
             self.force_moment_entry.insert(0, self.force_moment)
 
             tkinter.Label(nroot, text='moment name').grid(row=2, column=3)
-            self.force_moment_entry_name = tkinter.Entry(nroot, width=15, justify='center')
-            self.force_moment_entry_name.grid(row=2, column=4, sticky='W')
-            self.force_moment_entry_name.insert(0, self.force_moment_label)
+            self.force_moment_entry_label = tkinter.Entry(nroot, width=15, justify='center')
+            self.force_moment_entry_label.grid(row=2, column=4, sticky='W')
+            self.force_moment_entry_label.insert(0, self.force_moment_label)
         else:
             img = tkinter.PhotoImage(master=nroot, file=os.path.join(self.path, r'images/axis_orientation.png'))
             img = img.subsample(4, 4)
@@ -173,92 +197,10 @@ class InputTable:
         tkinter.Button(nroot, text='submit data', command=submit_data).grid(row=1, column=2, rowspan=2, sticky='n'+'s'+'e'+'w')
         nroot.bind('<Tab>', select_entry)
         nroot.mainloop()
-    
 
-class Interface:
-    """ this class creates interface where the user can input data"""
-
-    def __init__(self, root, bg, font, bolt, force, dname, err_lab):
-        self.bg = bg
-        self.font = font
-        self.path = dname
-        self.bolt_info = bolt
-        self.relief = 'groove'
-        self.err_lab = err_lab
-        self.force_info = force
-        
-        self.force_moment_entry = None
-        self.force_moment_entry_name = None
-        self.force_moment = ''
-        self.force_moment_label = 'M'
-
-        self.object1 = {}
-        self.object2 = {}
-
-        self.construct_labelframes()
-        self.construct_object1_UI()
-        self.construct_object2_UI()
-
-    def construct_labelframes(self):
-        self.inputs = tkinter.LabelFrame(text='inputs', relief='solid', bg=self.bg)
-        self.inputs.grid(row=0, column=0, rowspan=2, sticky='n'+'e'+'w', ipady=5, ipadx=5, padx=5)
-
-        self.table = tkinter.LabelFrame(self.inputs, text='input_tables', relief='groove', bg=self.bg)
-        self.table.grid(row=0, column=0, sticky='e'+'w')
-
-        self.obj1 = tkinter.LabelFrame(self.inputs, text='connection material 1', relief='groove', bg=self.bg)
-        self.obj1.grid(row=1, column=0, sticky='n'+'e'+'w'+'s')
-
-        self.obj2 = tkinter.LabelFrame(self.inputs, text='connection material 2', relief='groove', bg=self.bg)
-        self.obj2.grid(row=2, column=0, sticky='n'+'e'+'w'+'s')
-
-        self.buttons = tkinter.LabelFrame(text='buttons', relief='solid', bg=self.bg)
-        self.buttons.grid(row=2, column=0, sticky='n'+'e'+'w'+'s', padx=5, pady=5)
-
-        tkinter.Button(self.table, text='edit geometry data', command=lambda: self.input_table('bolt'),
-                       font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
-
-        tkinter.Button(self.table, text='edit load data', command=lambda: self.input_table('force'),
-                       font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
-
-    def choose_width(self, idx, width):
-        """returns desired width for an entry box
-        the ones containing name should be wider"""
-
-        if idx == 0: return width[1]
-        else: return width[0]
-
-
-    # --INPUT TABLES------------------------------------------------
-    
-    # MATERIAL INFORMATION -------------------------------------------
-    def construct_object1_UI(self):
-        entry_id = ['name', 'Fbry[MPa]']
-        for index, id in enumerate(entry_id):
-            tkinter.Label(self.obj1, text=id, font=self.font[1],
-                          bg=self.bg).grid(row=index, column=0, padx=55)
-            self.object1[id] = tkinter.Entry(self.obj1, justify='center', font=self.font[1], relief=self.relief, width=20)
-            self.object1[id].grid(row=index, column=1, sticky='e')
-            # insert default values
-            if id == 'name': self.object1[id].insert(0, 'Material 1')
-            else: self.object1[id].insert(0, '1')
-
-    def construct_object2_UI(self):
-        entry_id = ['name', 'Fbry[MPa]']
-        for index, id in enumerate(entry_id):
-            tkinter.Label(self.obj2, text=id, font=self.font[1],
-                          bg=self.bg).grid(row=index, column=0, padx=55)
-            self.object2[id] = tkinter.Entry(self.obj2, justify='center', font=self.font[1], relief=self.relief, width=20)
-            self.object2[id].grid(row=index, column=1, sticky='e')
-            # insert default values
-            if id == 'name': self.object2[id].insert(0, 'Material 2')
-            else: self.object2[id].insert(0, '1')
-
-
-    # UPDATING DATA ---------------------------------------------------
-    def update_data(self, inpt_type):
+    def load_data(self, inpt_type):
         test_data = tkinter.filedialog.askopenfile(mode='r+')
-        self.err_lab.config(text='')
+        # self.err_lab.config(text='')
         if inpt_type == 'bolt': data = self.bolt_info
         else: data = self.force_info
         
@@ -288,4 +230,68 @@ class Interface:
         #     # in case there are less arrtibutes in the input we need to handle
         #     # an error
         #     self.err_lab.config(text='invalid input data look at documentation')
+            
+
+class Interface:
+    """ this class creates interface where the user can input data"""
+
+    def __init__(self, root, bg, font, err_lab, table):
+        self.bg = bg
+        self.font = font
+        self.relief = 'groove'
+        self.err_lab = err_lab
         
+        self.table = table
+
+        self.object1 = {}
+        self.object2 = {}
+
+        self.construct_labelframes()
+        self.construct_object1_UI()
+        self.construct_object2_UI()
+
+    def construct_labelframes(self):
+        self.inputs = tkinter.LabelFrame(text='inputs', relief='solid', bg=self.bg)
+        self.inputs.grid(row=0, column=0, rowspan=2, sticky='n'+'e'+'w', ipady=5, ipadx=5, padx=5)
+
+        self.tab = tkinter.LabelFrame(self.inputs, text='input_tables', relief='groove', bg=self.bg)
+        self.tab.grid(row=0, column=0, sticky='e'+'w')
+
+        self.obj1 = tkinter.LabelFrame(self.inputs, text='connection material 1', relief='groove', bg=self.bg)
+        self.obj1.grid(row=1, column=0, sticky='n'+'e'+'w'+'s')
+
+        self.obj2 = tkinter.LabelFrame(self.inputs, text='connection material 2', relief='groove', bg=self.bg)
+        self.obj2.grid(row=2, column=0, sticky='n'+'e'+'w'+'s')
+
+        self.buttons = tkinter.LabelFrame(text='buttons', relief='solid', bg=self.bg)
+        self.buttons.grid(row=2, column=0, sticky='n'+'e'+'w'+'s', padx=5, pady=5)
+
+        tkinter.Button(self.tab, text='edit geometry data', command=lambda: self.table.construct_table('bolt'),
+                       font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
+
+        tkinter.Button(self.tab, text='edit load data', command=lambda: self.table.construct_table('force'),
+                       font=self.font[1], bg=self.bg, relief=self.relief).pack(fill='x')
+
+    
+    # MATERIAL INFORMATION -------------------------------------------
+    def construct_object1_UI(self):
+        entry_id = ['name', 'Fbry[MPa]']
+        for index, id in enumerate(entry_id):
+            tkinter.Label(self.obj1, text=id, font=self.font[1],
+                          bg=self.bg).grid(row=index, column=0, padx=55)
+            self.object1[id] = tkinter.Entry(self.obj1, justify='center', font=self.font[1], relief=self.relief, width=20)
+            self.object1[id].grid(row=index, column=1, sticky='e')
+            # insert default values
+            if id == 'name': self.object1[id].insert(0, 'Material 1')
+            else: self.object1[id].insert(0, '1')
+
+    def construct_object2_UI(self):
+        entry_id = ['name', 'Fbry[MPa]']
+        for index, id in enumerate(entry_id):
+            tkinter.Label(self.obj2, text=id, font=self.font[1],
+                          bg=self.bg).grid(row=index, column=0, padx=55)
+            self.object2[id] = tkinter.Entry(self.obj2, justify='center', font=self.font[1], relief=self.relief, width=20)
+            self.object2[id].grid(row=index, column=1, sticky='e')
+            # insert default values
+            if id == 'name': self.object2[id].insert(0, 'Material 2')
+            else: self.object2[id].insert(0, '1')

@@ -40,11 +40,17 @@ poupratoval som triedu OutCalc nech to je čiteteľné {cm:2021-06-23}
 put custom names to the table  {cm:2021-06-30}
 F rozdeliť na komponenty a vymazať Fs Fm z tabuľky {cm:2021-06-23}
 
-RF na 2 desatinne miesta...d na 3 ostatné na 1
-    !!!nezauokruhlovat ale dať precision na 1
-    nastav border na entry boxe tak aby bol nulovy a nebolo ho vidno
+RF na 2 desatinne miesta...d na 3 ostatné na 1 {cm:2021-07-01}
+    !!!nezauokruhlovat ale dať precision na 1 {cm:2021-07-01}
+    nastav border na entry boxe tak aby bol nulovy a nebolo ho vidno {cm:2021-07-01}
+the main interface so it looks somewhat nice {cm:2021-07-01}
+otypuj si veci hlavne v calc (keď sa do toho bude niekto pozerať aby to aj dávalo zmysel) {cm:2021-07-03}
 
+unbind arrow keys
+
+
+format all the code
+pridaj všetky exceptions
 dokumentáciuuu treba
-otypuj si veci hlavne v calc (keď sa do toho bude niekto pozerať aby to aj dávalo zmysel)
-adjust the main interface so it looks somewhat nice
 take in csv file as an input
+skontroluj či to robí to čo to má robiť
