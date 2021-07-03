@@ -1,5 +1,6 @@
 from tkscrolledframe import ScrolledFrame
 import tkinter
+import csv
 import os
 
 class InputTable:
@@ -199,7 +200,7 @@ class InputTable:
         nroot.mainloop()
 
     def load_data(self, inpt_type):
-        test_data = tkinter.filedialog.askopenfile(mode='r+')
+        test_data = tkinter.filedialog.askopenfilename()
         # self.err_lab.config(text='')
         if inpt_type == 'bolt': data = self.bolt_info
         else: data = self.force_info
@@ -207,25 +208,23 @@ class InputTable:
         # remove old data from the dictionary
         for x in list(data.keys()): data[x].clear()
 
+        #     if len(line) != len(list(data.keys())):
+        #         # in case there are more arrtibutes in the input we need
+        #         self.err_lab.config(text='invalid input data look at documentation')
+        #         break
+        
         # try:
-
-        # load moment of force
-        if inpt_type == 'force': self.force_moment = float(test_data.readline())
-
-        while True:
-            line = test_data.readline()
-            if line == '': break
-
-            line = line.strip().split('\t')
-            line = [float(d.replace(',', '.')) if i!= 0 else d for i, d in enumerate(line)]
-
-            if len(line) != len(list(data.keys())):
-                # in case there are more arrtibutes in the input we need
-                self.err_lab.config(text='invalid input data look at documentation')
-                break
-
-            # append the files to the dictionary which will be further used
-            for idx, column in enumerate(list(data.keys())): data[column].append(line[idx])
+        keys = list(data.keys())
+        with open(test_data, mode='r') as inp:
+            reader = csv.reader(inp)
+            for idx, row in enumerate(reader):
+                # get force moment as the last value of the first row
+                if inpt_type == 'force' and idx == 0: 
+                    self.force_moment = float(row[-1])
+                # get the remaining values
+                for i in range(len(keys)):
+                    if i > 0: data[keys[i]].append(float(row[i]))
+                    else: data[keys[i]].append(row[i])
         # except:
         #     # in case there are less arrtibutes in the input we need to handle
         #     # an error
