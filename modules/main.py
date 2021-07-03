@@ -30,14 +30,15 @@ font = [('ms sans', '13'), ('ms sans', '11'), ('ms sans', '9'),
 err_lab = tkinter.Label(root, text='', font=font[1], fg='red', bg=bg)
 err_lab.grid(row=0, column=1, pady=(10, 0))
 
-g = tkinter.Canvas(root,
-                   width=cw,
-                   height=ch,
-                   bg=bg,
-                   highlightthickness=0)
+g = tkinter.Canvas(root, width=cw, height=ch, bg=bg, highlightthickness=0)
 g.grid(row=1, column=1, rowspan=2, sticky='s')
 
-name_ent = tkinter.Entry(root, font=font[3], justify='center', width=40,  borderwidth=0, highlightthickness=1)
+name_ent = tkinter.Entry(root,
+                         font=font[3],
+                         justify='center',
+                         width=40,
+                         borderwidth=0,
+                         highlightthickness=1)
 name_ent.grid(row=1, column=1, pady=(0, 150))
 
 
@@ -83,15 +84,24 @@ def create_buttons(sktch, inpt):
         'fill in geometry', 'fill in load'
     ]
     functions = [
-        redraw_scheme, run_calculations, rprt.gen_image_report, rprt.gen_cvs_table,
-        lambda: table.load_data('bolt'), lambda: table.load_data('force')
+        redraw_scheme, run_calculations, rprt.gen_image_report,
+        rprt.gen_cvs_table, lambda: table.load_data('bolt'),
+        lambda: table.load_data('force')
     ]
 
     for index, id in enumerate(button_id):
-        tkinter.Button(inpt.buttons, text=id, command=functions[index], height=2,
-                       font=font[1],bg=bg, relief=relief, width=18).grid(
-                            row=index // 2,column=index % 2,
-                            sticky='e' + 'w', padx=2,pady=2)
+        tkinter.Button(inpt.buttons,
+                       text=id,
+                       command=functions[index],
+                       height=2,
+                       font=font[1],
+                       bg=bg,
+                       relief=relief,
+                       width=18).grid(row=index // 2,
+                                      column=index % 2,
+                                      sticky='e' + 'w',
+                                      padx=2,
+                                      pady=2)
 
 
 # INPUT FORMAT ------------------------------------------
