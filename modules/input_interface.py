@@ -107,30 +107,26 @@ class InputTable:
             ypos = entrys.index('y-pos[mm]')
             xpos = entrys.index('x-pos[mm]')
 
-            for column in range(len(entrys)):
-                info[entrys[column]] = []
-                for row in range(num_rows):
-                    value = entrys_id[row][column].get()
+            try:
+                for column in range(len(entrys)):
+                    info[entrys[column]] = []
+                    for row in range(num_rows):
+                        value = entrys_id[row][column].get()
 
-                    # save name as string others as float
-                    if column != 0: info[entrys[column]].append(float(value))
-                    else: info[entrys[column]].append(value)
-
-                    # check if all entries are filled
-                    if not value:
-                        err_lab.grid(row=3,
-                                     column=0,
-                                     sticky='n' + 's' + 'e' + 'w')
-                        err_lab.config(text='all entrys must be filled')
-                        return
-
-            if table_type == 'bolt':
-                self.bolt_info = info.copy()
-            else:
-                self.force_moment = float(self.force_moment_entry.get())
-                self.force_moment_label = self.force_moment_entry_label.get()
-                self.force_info = info.copy()
-            return 'ok'
+                        # save name as string others as float
+                        if column != 0: info[entrys[column]].append(float(value))
+                        else: info[entrys[column]].append(value)
+        
+                if table_type == 'bolt':
+                    self.bolt_info = info.copy()
+                else:
+                    self.force_moment = float(self.force_moment_entry.get())
+                    self.force_moment_label = self.force_moment_entry_label.get()
+                    self.force_info = info.copy()
+                return 'ok'
+            except:
+                err_lab.grid(row=3, column=0, sticky='n' + 's' + 'e' + 'w')
+                err_lab.config(text='all entrys must be filled a with valid value')
 
         def select_entry(event):
             id = nroot.focus_get()
@@ -240,9 +236,9 @@ class InputTable:
         nroot.bind('<Tab>', select_entry)
         nroot.mainloop()
 
-    def load_data(self, inpt_type):
+    def load_data(self, inpt_type, err_lab):
         test_data = tkinter.filedialog.askopenfilename()
-        # self.err_lab.config(text='')
+        err_lab.config(text='')
         if inpt_type == 'bolt': data = self.bolt_info
         else: data = self.force_info
 
@@ -254,23 +250,28 @@ class InputTable:
         #         # in case there are more arrtibutes in the input we need
         #         self.err_lab.config(text='invalid input data look at documentation')
         #         break
+        try:
+            keys = list(data.keys())
+            with open(test_data, mode='r') as inp:
+                reader = csv.reader(inp)
+                for idx, row in enumerate(reader):
 
-        # try:
-        keys = list(data.keys())
-        with open(test_data, mode='r') as inp:
-            reader = csv.reader(inp)
-            for idx, row in enumerate(reader):
-                # get force moment as the last value of the first row
-                if inpt_type == 'force' and idx == 0:
-                    self.force_moment = float(row[-1])
-                # get the remaining values
-                for i in range(len(keys)):
-                    if i > 0: data[keys[i]].append(float(row[i]))
-                    else: data[keys[i]].append(row[i])
-        # except:
-        #     # in case there are less arrtibutes in the input we need to handle
-        #     # an error
-        #     self.err_lab.config(text='invalid input data look at documentation')
+                    # get force moment as the last value of the first row and 
+                    # chceck the number of columns
+                    if idx == 0:
+                        if inpt_type == 'force':
+                            self.force_moment = float(row[-1])
+                            if len(row)-1 != len(keys):
+                                err_lab.config(text='invalid number of columns in the input')
+                        if len(row) != len(keys) and inpt_type == 'bolt':
+                            err_lab.config(text='invalid number of columns in the input')
+
+                    # get the remaining values
+                    for i in range(len(keys)):
+                        if i > 0: data[keys[i]].append(float(row[i]))
+                        else: data[keys[i]].append(row[i])
+        except:
+            err_lab.config(text='invalid number of columns in the input')
 
 
 class Interface:
