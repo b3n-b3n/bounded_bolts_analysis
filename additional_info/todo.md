@@ -48,7 +48,6 @@ otypuj si veci hlavne v calc (keď sa do toho bude niekto pozerať aby to aj dá
 unbind arrow keys {cm:2021-07-03}
 take in csv file as an input {cm:2021-07-03}
 format all the code {cm:2021-07-03}
-
-pridaj všetky exceptions
-dokumentáciuuu treba
-skontroluj či to robí to čo to má robiť
+dokumentáciuuu treba {cm:2021-07-04}
+load musí vypísať error ak sa nezhoduje počet stĺpcov {cm:2021-07-04}
+pridaj všetky exceptions {cm:2021-07-04}
