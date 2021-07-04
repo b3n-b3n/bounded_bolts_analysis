@@ -16,7 +16,7 @@ dname = r'{}'.format(os.path.realpath(__file__).replace('modules/main.py', ''))
 os.chdir(dname)
 
 root = tkinter.Tk()
-root.title('eccentric joints')
+root.title('Eccentric Joint Analysis')
 
 # general appearance options
 bg = 'grey100'
