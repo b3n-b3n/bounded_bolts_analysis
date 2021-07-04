@@ -59,23 +59,23 @@ def calculate_centroid(bolts):
 
 def redraw_scheme():
     # a tkinter button cannot have more than one fuctions bounded to it
-    # try:
-    centroid = calculate_centroid(table.bolt_info)
-    sktch.redraw(table.bolt_info, table.force_info, centroid)
-    # except:
-    #     # if the user inputs wrong data manually
-    #     err_lab.config(text='there are none or invalid geometry and/or force data')
+    try:
+        centroid = calculate_centroid(table.bolt_info)
+        sktch.redraw(table.bolt_info, table.force_info, centroid)
+    except:
+        # if the user inputs wrong data manually
+        err_lab.config(text='there are none or invalid geometry and/or force data')
 
 
 def run_calculations():
     # a tkinter button cannot have more than one fuctions bounded to it
-    # try:
-    centroid = calculate_centroid(table.bolt_info)
-    calc.calc_driver(centroid, table.force_moment)
-    sktch.redraw(table.bolt_info, table.force_info, centroid, calc.sum_load)
-    # except:
-    #     # if the user inputs wrong data manually
-    #     err_lab.config(text='there are none or invalid geometry and/or force data')
+    try:
+        centroid = calculate_centroid(table.bolt_info)
+        calc.calc_driver(centroid, table.force_moment)
+        sktch.redraw(table.bolt_info, table.force_info, centroid, calc.sum_load)
+    except:
+        # if the user inputs wrong data manually
+        err_lab.config(text='there are none or invalid geometry and/or force data')
 
 
 def create_buttons(sktch, inpt):
@@ -85,8 +85,8 @@ def create_buttons(sktch, inpt):
     ]
     functions = [
         redraw_scheme, run_calculations, rprt.gen_image_report,
-        rprt.gen_cvs_table, lambda: table.load_data('bolt'),
-        lambda: table.load_data('force')
+        rprt.gen_cvs_table, lambda: table.load_data('bolt', err_lab),
+        lambda: table.load_data('force', err_lab)
     ]
 
     for index, id in enumerate(button_id):
