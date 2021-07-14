@@ -4,6 +4,7 @@ import Tkinter
 import pandas
 import numpy
 import PIL
+import tkFileDialog
 
 import calc
 
@@ -33,7 +34,7 @@ class Report:
 
     def gen_cvs_table(self):
         df = calc.OutCalc(self.calc, self.inpt, self.table).create_dataframe()
-        path = Tkinter.filedialog.asksaveasfilename(defaultextension='.csv',
+        path = tkFileDialog.asksaveasfilename(defaultextension='.csv',
                                                     initialdir=self.dname +
                                                     '/reports')
         df.to_csv(path_or_buf=path)
@@ -176,7 +177,7 @@ class Report:
         img_comb = numpy.concatenate([bg, fig])
         img_comb = Image.fromarray(img_comb)
         # img_comb.show()
-        path = tkinter.filedialog.asksaveasfilename(defaultextension='.jpg',
+        path = tkFileDialog.asksaveasfilename(defaultextension='.jpg',
                                                     initialdir=self.dname +
                                                     '/reports')
         img_comb.save(path)

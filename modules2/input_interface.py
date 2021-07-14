@@ -1,4 +1,5 @@
-# from tkscrolledframe import ScrolledFrame
+from tkscrolledframe import ScrolledFrame
+import tkFileDialog
 import Tkinter as tkinter
 import csv
 import os
@@ -232,7 +233,7 @@ class InputTable:
         nroot.mainloop()
 
     def load_data(self, inpt_type, err_lab):
-        test_data = tkinter.filedialog.askopenfilename()
+        test_data = tkFileDialog.askopenfilename()
         err_lab.config(text='')
         if inpt_type == 'bolt': data = self.bolt_info
         else: data = self.force_info
