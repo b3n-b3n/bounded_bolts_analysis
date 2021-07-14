@@ -1,5 +1,4 @@
 # libraries
-import tkinter.filedialog
 import tkinter
 import math
 import os
