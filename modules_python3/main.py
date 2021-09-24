@@ -10,7 +10,7 @@ import out
 import calc
 
 # get a path to this file
-dname = r'{}'.format(os.path.realpath(__file__).replace('modules/main.py', ''))
+dname = r'{}'.format(os.path.realpath(__file__).replace('modules3/main.py', ''))
 # change the working directory if it is somewhere else
 os.chdir(dname)
 

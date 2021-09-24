@@ -1,5 +1,5 @@
 from tkscrolledframe import ScrolledFrame
-import tkinter
+import tkinter.filedialog
 import csv
 import os
 
