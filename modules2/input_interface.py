@@ -1,8 +1,8 @@
-from tkscrolledframe import ScrolledFrame
 import tkFileDialog
 import Tkinter as tkinter
 import csv
 import os
+from tkscrolledframe import ScrolledFrame
 
 
 class InputTable:
