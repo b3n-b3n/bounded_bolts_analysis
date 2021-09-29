@@ -1,7 +1,7 @@
 import tkinter.filedialog
 import csv
 import os
-from tkscrolledframe import ScrolledFrame
+# from tkscrolledframe import ScrolledFrame
 # from tkscrolledframe import *
 
 
@@ -62,18 +62,18 @@ class InputTable:
         num_rows = 1 if not info[samplekey] else len(info[samplekey])
 
         # Create a ScrolledFrame widget and buttons
-        scrll_frm = ScrolledFrame(nroot, width=width, height=height)
-        scrll_frm.grid(row=0, column=0, columnspan=3)
+        # scrll_frm = ScrolledFrame(nroot, width=width, height=height)
+        # scrll_frm.grid(row=0, column=0, columnspan=3)
 
         # Bind the arrow keys and scroll wheel
         # scrll_frm.bind_arrow_keys(nroot)
-        scrll_frm.bind_scroll_wheel(nroot)
+        # scrll_frm.bind_scroll_wheel(nroot)
 
         # Create a frame within the ScrolledFrame
-        inner_frame = scrll_frm.display_widget(tkinter.Frame)
+        # inner_frame = scrll_frm.display_widget(tkinter.Frame)
 
-        # inner_frame = tkinter.Frame(nroot, width=width, height=height)
-        # inner_frame.grid(row=0, column=0, columnspan=3)
+        inner_frame = tkinter.Frame(nroot, width=width, height=height)
+        inner_frame.grid(row=0, column=0, columnspan=3)
 
         def add_row():
             nonlocal num_rows
